@@ -1,6 +1,6 @@
 import { supabase } from './supabase'
 
-export type UserRole = 'admin' | 'conducteur'
+export type UserRole = 'admin' | 'conducteur' | 'magasinier'
 
 export interface User {
   id: string
@@ -168,6 +168,13 @@ export function isAdmin(): boolean {
  */
 export function isConducteur(): boolean {
   return getCurrentUserRole() === 'conducteur'
+}
+
+/**
+ * Vérifier si l'utilisateur est magasinier
+ */
+export function isMagasinier(): boolean {
+  return getCurrentUserRole() === 'magasinier'
 }
 
 /**

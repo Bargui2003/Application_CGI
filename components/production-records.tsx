@@ -8,8 +8,33 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { useProduction } from '@/context/production-context-supabase'
 import { useAuth } from '@/context/auth-context'
-import { Download, Filter, Search, CheckCircle2, Clock, AlertCircle, Printer } from 'lucide-react'
+import { Download, Filter, Search, CheckCircle2, Clock, AlertCircle, Printer, XCircle } from 'lucide-react'
 import { downloadPDF, generateProductionSheet } from '@/lib/pdf-generator'
+
+const getStatusBadge = (status: string) => {
+  switch (status) {
+    case 'draft':
+      return <Badge variant="secondary" className="flex items-center gap-1">
+        <Clock className="h-3 w-3" />
+        Brouillon
+      </Badge>
+    case 'validated_by_magasinier':
+      return <Badge variant="default" className="flex items-center gap-1 bg-green-50 text-green-700 border-green-200">
+        <CheckCircle2 className="h-3 w-3" />
+        Validé par magasinier
+      </Badge>
+    case 'rejected_by_magasinier':
+      return <Badge variant="destructive" className="flex items-center gap-1">
+        <XCircle className="h-3 w-3" />
+        Refusé par magasinier
+      </Badge>
+    default:
+      return <Badge variant="outline" className="flex items-center gap-1">
+        <CheckCircle2 className="h-3 w-3" />
+        Validée
+      </Badge>
+  }
+}
 
 export function ProductionRecords() {
   const { productionHistory } = useProduction()
@@ -182,10 +207,7 @@ export function ProductionRecords() {
                       <h4 className="font-bold text-lg">
                         Ø{production.diameter}mm - {production.pressure}
                       </h4>
-                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                        <CheckCircle2 className="h-3 w-3 mr-1" />
-                        Validée
-                      </Badge>
+                      {getStatusBadge(production.status || 'validated')}
                     </div>
                     <p className="text-sm text-muted-foreground">
                       {new Date(new Date(production.date).getTime() + 3600000).toLocaleString('fr-FR')}
