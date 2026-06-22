@@ -766,15 +766,11 @@ export function ProductionCalculator() {
                         {new Date(production.date).toLocaleDateString('fr-FR')}
                       </span>
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        production.status === 'validated' || production.status === 'validated_by_magasinier'
+                        production.status === 'validated'
                           ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                           : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
                       }`}>
-                        {production.status === 'validated_by_magasinier'
-                          ? 'Validé par magasinier'
-                          : production.status === 'validated'
-                            ? 'Validée'
-                            : 'Brouillon'}
+                        {production.status === 'validated' ? 'Validée' : 'Brouillon'}
                       </span>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">

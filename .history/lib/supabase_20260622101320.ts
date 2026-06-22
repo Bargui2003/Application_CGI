@@ -29,6 +29,7 @@ export interface ProductionRecord {
   speed: number
   production_time: number
   total_length: number
+  status?: 'draft' | 'validated' | 'validated_by_magasinier' | 'rejected_by_magasinier'
   created_at: string
   updated_at: string
 }
@@ -118,96 +119,114 @@ export const productionService = {
 export const stockLevelService = {
   // Récupérer les niveaux de stock actuels
   async get(): Promise<StockLevel> {
-    const { data, error } = await supabase
-      .from('stock_levels')
-      .select('*')
-      .single()
+    try {
+      const response = await fetch('/api/stock/levels', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
 
-    if (error) {
-      // Si aucune ligne n'existe, en créer une par défaut
-      if (error.code === 'PGRST116') {
-        return stockLevelService.init()
-      }
-      throw error
-    }
-    return data
-  },
-
-  // Initialiser avec les valeurs par défaut
-  async init(): Promise<StockLevel> {
-    const { data, error } = await supabase
-      .from('stock_levels')
-      .insert([
-        {
+      if (!response.ok) {
+        console.error(`Stock levels API error: ${response.status} ${response.statusText}`)
+        // Return defaults on error
+        return {
+          id: null as any,
           hd: 1000,
           ld: 1000,
           black_color: 500,
           dryer: 500,
-        },
-      ])
-      .select()
-      .single()
+          last_updated: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        }
+      }
 
-    if (error) throw error
-    return data
+      const data = await response.json()
+      
+      // Ensure we have valid data
+      if (!data) {
+        return {
+          id: null as any,
+          hd: 1000,
+          ld: 1000,
+          black_color: 500,
+          dryer: 500,
+          last_updated: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        }
+      }
+
+      return data
+    } catch (error) {
+      console.error('Error fetching stock levels:', error)
+      // Return defaults on error
+      return {
+        id: null as any,
+        hd: 1000,
+        ld: 1000,
+        black_color: 500,
+        dryer: 500,
+        last_updated: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      }
+    }
+  },
+
+  // Initialiser avec les valeurs par défaut
+  async init(): Promise<StockLevel> {
+    try {
+      const response = await fetch('/api/stock/levels', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          hd: 1000,
+          ld: 1000,
+          black_color: 500,
+          dryer: 500,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to initialize stock levels: ${response.statusText}`)
+      }
+
+      const data = await response.json()
+      return data
+    } catch (error) {
+      console.error('Error initializing stock levels:', error)
+      throw error
+    }
   },
 
   // Mettre à jour les niveaux
   async update(levels: Omit<StockLevel, 'id' | 'created_at' | 'updated_at' | 'last_updated'>): Promise<StockLevel> {
     try {
-      // Utiliser upsert pour éviter les problèmes de 406/401
-      // Cela va insérer si le record n'existe pas, ou mettre à jour s'il existe
-      const { data, error } = await supabase
-        .from('stock_levels')
-        .upsert({
-          id: '1', // Utiliser un ID fixe pour avoir un seul enregistrement
+      const response = await fetch('/api/stock/levels', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           hd: levels.hd,
           ld: levels.ld,
           black_color: levels.black_color,
           dryer: levels.dryer,
-          updated_at: new Date().toISOString(),
-        }, {
-          onConflict: 'id'
-        })
-        .select()
-        .single()
+        }),
+      })
 
-      if (error) throw error
-      return data
-    } catch (err: any) {
-      // Si upsert échoue à cause des RLS, essayer une autre approche
-      if (err.code === '401' || err.status === 401) {
-        // Essayer de récupérer puis mettre à jour
-        const { data: existing, error: getErr } = await supabase
-          .from('stock_levels')
-          .select('id')
-          .maybeSingle()
+      const data = await response.json()
 
-        if (getErr) throw getErr
-
-        if (existing) {
-          // Si le record existe, le mettre à jour
-          const { data, error } = await supabase
-            .from('stock_levels')
-            .update({
-              hd: levels.hd,
-              ld: levels.ld,
-              black_color: levels.black_color,
-              dryer: levels.dryer,
-              updated_at: new Date().toISOString(),
-            })
-            .eq('id', existing.id)
-            .select()
-            .single()
-
-          if (error) throw error
-          return data
-        } else {
-          // Si aucun record n'existe, en créer un
-          return stockLevelService.init()
-        }
+      if (!response.ok) {
+        const errorMsg = data?.details || data?.error || response.statusText
+        throw new Error(`Failed to update stock levels: ${errorMsg}`)
       }
-      throw err
+
+      return data
+    } catch (error) {
+      console.error('Error updating stock levels:', error)
+      throw error
     }
   },
 }

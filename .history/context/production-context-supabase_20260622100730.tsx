@@ -22,7 +22,7 @@ export interface ProductionRecord {
   speed: number
   productionTime: number
   totalLength: number
-  status?: 'draft' | 'validated'
+  status?: 'draft' | 'validated' | 'validated_by_magasinier' | 'rejected_by_magasinier'
 }
 
 export interface StockLevels {
@@ -182,22 +182,7 @@ export function ProductionProvider({ children }: { children: React.ReactNode }) 
         speed: record.speed,
         production_time: record.productionTime,
         total_length: record.totalLength,
-      })
-
-      // Mettre à jour les stocks localement
-      const newStocks = {
-        hd: stockLevels.hd - record.hdQuantity,
-        ld: stockLevels.ld - record.ldQuantity,
-        blackColor: stockLevels.blackColor - record.blackColorQuantity,
-        dryer: stockLevels.dryer - record.dryerQuantity,
-      }
-
-      // Sauvegarder les nouveaux niveaux
-      await stockLevelService.update({
-        hd: newStocks.hd,
-        ld: newStocks.ld,
-        black_color: newStocks.blackColor,
-        dryer: newStocks.dryer,
+        status: 'draft',
       })
 
       // Mettre à jour l'état local
@@ -224,7 +209,8 @@ export function ProductionProvider({ children }: { children: React.ReactNode }) 
       }
 
       setProductionHistory((prev) => [formattedProd, ...prev])
-      setStockLevels(newStocks)
+      // Note: Stock levels are NOT updated here - only magasinier should update stocks
+      // setStockLevels(newStocks)
 
       // Retourner la production formatée
       return formattedProd

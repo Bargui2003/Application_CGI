@@ -29,6 +29,7 @@ export interface ProductionRecord {
   speed: number
   production_time: number
   total_length: number
+  status?: 'draft' | 'validated' | 'validated_by_magasinier' | 'rejected_by_magasinier'
   created_at: string
   updated_at: string
 }

@@ -447,7 +447,7 @@ export function MagasinierDashboard() {
                       placeholder="Ajoutez des notes pour cette validation ou ce refus..."
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
-                      className="min-h-20"
+                      className="min-h-[80px]"
                       disabled={validating !== null}
                     />
                     <p className="text-xs text-muted-foreground">
