@@ -1,4 +1,4 @@
-import { supabase } from './supabase'
+import { getSupabaseClient } from './supabase'
 
 export type UserRole = 'admin' | 'conducteur' | 'magasinier'
 
@@ -196,6 +196,7 @@ export async function verifyToken(token: string): Promise<User | null> {
     // et vérifier la signature du token
 
     // Récupérer l'utilisateur depuis Supabase en utilisant le token
+    const supabase = getSupabaseClient()
     const { data: { user }, error } = await supabase.auth.getUser(token)
 
     if (error || !user) {
