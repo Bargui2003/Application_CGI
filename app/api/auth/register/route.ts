@@ -3,11 +3,11 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const { username, email, password } = await request.json()
+    const { email, password, full_name, role } = await request.json()
 
-    if (!username || !email || !password) {
+    if (!email || !password) {
       return NextResponse.json(
-        { error: 'Username, email et password sont requis' },
+        { error: 'Email et mot de passe requis' },
         { status: 400 }
       )
     }
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
     if (!supabaseUrl || !supabaseServiceKey) {
-      console.error('Variables d\'environnement Supabase manquantes')
+      console.error('[v0] Supabase env vars missing')
       return NextResponse.json(
         { error: 'Erreur de configuration serveur' },
         { status: 500 }
@@ -25,54 +25,59 @@ export async function POST(request: NextRequest) {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
-    // Vérifier si l'utilisateur existe déjà
-    const { data: existingUser } = await supabase
-      .from('users')
-      .select('id')
-      .eq('username', username)
-      .single()
+    // Créer l'utilisateur avec Supabase Auth
+    const { data, error } = await supabase.auth.admin.createUser({
+      email,
+      password,
+      user_metadata: {
+        full_name: full_name || email.split('@')[0],
+        role: role || 'conducteur',
+      },
+      email_confirm: true, // Auto-confirm email for development
+    })
 
-    if (existingUser) {
+    if (error) {
+      console.error('[v0] Registration error:', error)
       return NextResponse.json(
-        { error: 'Cet utilisateur existe déjà' },
-        { status: 409 }
+        { error: error.message || 'Erreur lors de l\'inscription' },
+        { status: 400 }
       )
     }
 
-    // Créer l'utilisateur
-    const { data: newUser, error: insertError } = await supabase
-      .from('users')
+    if (!data.user) {
+      return NextResponse.json(
+        { error: 'Erreur création utilisateur' },
+        { status: 500 }
+      )
+    }
+
+    // Le profil devrait être créé automatiquement par le trigger Supabase
+    // Mais on peut le créer ici pour être sûr
+    await supabase
+      .from('profiles')
       .insert([
         {
-          username,
-          email,
-          password_hash: password, // À remplacer par hash en production
-          role: 'conducteur', // Rôle par défaut
+          id: data.user.id,
+          email: data.user.email,
+          full_name: full_name || email.split('@')[0],
+          role: role || 'conducteur',
         },
       ])
       .select()
-      .single()
-
-    if (insertError) throw insertError
-
-    // Créer le token
-    const token = btoa(`${newUser.id}:${newUser.username}`)
 
     return NextResponse.json(
       {
         user: {
-          id: newUser.id,
-          username: newUser.username,
-          email: newUser.email,
-          role: newUser.role,
-          created_at: newUser.created_at,
+          id: data.user.id,
+          email: data.user.email,
+          role: role || 'conducteur',
+          full_name: full_name,
         },
-        token,
       },
       { status: 201 }
     )
   } catch (error: any) {
-    console.error('Erreur register:', error)
+    console.error('[v0] Register error:', error)
     return NextResponse.json(
       { error: error.message || 'Erreur lors de l\'inscription' },
       { status: 500 }

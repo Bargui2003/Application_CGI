@@ -7,67 +7,72 @@ export async function POST(request: NextRequest) {
 
     if (!email || !password) {
       return NextResponse.json(
-        { error: 'Email et password sont requis' },
+        { error: 'Email et mot de passe requis' },
         { status: 400 }
       )
     }
 
-    // Utiliser la clé service (côté serveur) pour accéder à la table users
-    // Les clés de service ont accès même avec RLS activé
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
     if (!supabaseUrl || !supabaseServiceKey) {
-      console.error('Variables d\'environnement Supabase manquantes')
+      console.error('[v0] Supabase env vars missing')
       return NextResponse.json(
         { error: 'Erreur de configuration serveur' },
         { status: 500 }
       )
     }
 
-    // Créer un client avec la clé de service
+    // Créer un client Supabase avec la clé de service pour accéder à l'authentification
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
-    // Récupérer l'utilisateur par email
-    const { data: user, error } = await supabase
-      .from('users')
+    // Utiliser Supabase Auth pour se connecter
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+
+    if (error || !data?.user) {
+      console.error('[v0] Login error:', error)
+      return NextResponse.json(
+        { error: 'Email ou mot de passe incorrect' },
+        { status: 401 }
+      )
+    }
+
+    // Récupérer le profil utilisateur
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
       .select('*')
-      .eq('email', email)
+      .eq('id', data.user.id)
       .single()
 
-    if (error || !user) {
+    if (profileError) {
+      console.error('[v0] Profile fetch error:', profileError)
       return NextResponse.json(
-        { error: 'Utilisateur non trouvé' },
-        { status: 401 }
+        { error: 'Erreur récupération profil utilisateur' },
+        { status: 500 }
       )
     }
 
-    // Vérifier le mot de passe
-    if (user.password_hash !== password) {
-      return NextResponse.json(
-        { error: 'Mot de passe incorrect' },
-        { status: 401 }
-      )
-    }
-
-    // Créer le token
-    const token = btoa(`${user.id}:${user.username}`)
-
+    // Retourner l'utilisateur et la session
     return NextResponse.json(
       {
         user: {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          role: user.role,
-          created_at: user.created_at,
+          id: data.user.id,
+          email: data.user.email,
+          role: profile?.role || 'conducteur',
+          full_name: profile?.full_name,
         },
-        token,
+        session: {
+          access_token: data.session?.access_token,
+          refresh_token: data.session?.refresh_token,
+        },
       },
       { status: 200 }
     )
   } catch (error: any) {
-    console.error('Erreur login:', error)
+    console.error('[v0] Login error:', error)
     return NextResponse.json(
       { error: error.message || 'Erreur lors de la connexion' },
       { status: 500 }
