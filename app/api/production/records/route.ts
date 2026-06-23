@@ -1,14 +1,12 @@
-import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
 
-// GET - Récupérer les mouvements de stock
 export async function GET(request: NextRequest) {
   try {
-    const limit = request.nextUrl.searchParams.get('limit') || '50'
-    const material = request.nextUrl.searchParams.get('material')
-
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+    const userId = request.nextUrl.searchParams.get('user_id')
+    const status = request.nextUrl.searchParams.get('status')
 
     if (!supabaseUrl || !supabaseServiceKey) {
       return NextResponse.json(
@@ -20,13 +18,16 @@ export async function GET(request: NextRequest) {
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
     let query = supabase
-      .from('stock_movements')
+      .from('production_records')
       .select('*')
       .order('created_at', { ascending: false })
-      .limit(parseInt(limit))
 
-    if (material) {
-      query = query.eq('material', material)
+    if (userId) {
+      query = query.eq('user_id', userId)
+    }
+
+    if (status) {
+      query = query.eq('status', status)
     }
 
     const { data, error } = await query
@@ -35,27 +36,35 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(data || [], { status: 200 })
   } catch (error: any) {
-    console.error('[v0] Movements GET error:', error)
+    console.error('[v0] Production GET error:', error)
     return NextResponse.json(
-      { error: error.message || 'Erreur récupération mouvements' },
+      { error: error.message || 'Erreur récupération enregistrements' },
       { status: 500 }
     )
   }
 }
 
-// POST - Créer un mouvement de stock
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const {
       user_id,
-      material,
-      material_label,
-      quantity,
-      operation,
-      before_value,
-      after_value,
-      notes,
+      total_quantity,
+      pieces_count,
+      waste_percentage,
+      useful_quantity,
+      hd_percentage,
+      ld_percentage,
+      hd_quantity,
+      ld_quantity,
+      black_color_quantity,
+      dryer_quantity,
+      weight_per_piece,
+      diameter,
+      pressure,
+      speed,
+      production_time,
+      total_length,
     } = body
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -68,9 +77,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (!material || quantity === undefined || !operation) {
+    if (!user_id) {
       return NextResponse.json(
-        { error: 'Paramètres requis: material, quantity, operation' },
+        { error: 'user_id est requis' },
         { status: 400 }
       )
     }
@@ -78,17 +87,27 @@ export async function POST(request: NextRequest) {
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
     const { data, error } = await supabase
-      .from('stock_movements')
+      .from('production_records')
       .insert([
         {
-          user_id: user_id || '00000000-0000-0000-0000-000000000000',
-          material,
-          material_label: material_label || material,
-          quantity: Number(quantity),
-          operation,
-          before_value: Number(before_value || 0),
-          after_value: Number(after_value || 0),
-          notes,
+          user_id,
+          total_quantity,
+          pieces_count,
+          waste_percentage,
+          useful_quantity,
+          hd_percentage,
+          ld_percentage,
+          hd_quantity,
+          ld_quantity,
+          black_color_quantity,
+          dryer_quantity,
+          weight_per_piece,
+          diameter,
+          pressure,
+          speed,
+          production_time,
+          total_length,
+          status: 'draft',
         },
       ])
       .select()
@@ -98,9 +117,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(data, { status: 201 })
   } catch (error: any) {
-    console.error('[v0] Movements POST error:', error)
+    console.error('[v0] Production POST error:', error)
     return NextResponse.json(
-      { error: error.message || 'Erreur création mouvement' },
+      { error: error.message || 'Erreur création enregistrement' },
       { status: 500 }
     )
   }
