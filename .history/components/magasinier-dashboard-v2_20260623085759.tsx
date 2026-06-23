@@ -24,6 +24,7 @@ import {
 } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
 import { isMagasinier } from '@/lib/auth'
+import { AdminIssuesTab } from './admin-issues-tab'
 
 interface ProductionRecord {
   id: string
@@ -288,9 +289,13 @@ export function MagasinierDashboard() {
 
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="productions">Productions</TabsTrigger>
           <TabsTrigger value="stocks">Stocks</TabsTrigger>
+          <TabsTrigger value="issues" className="flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4" />
+            Problèmes
+          </TabsTrigger>
         </TabsList>
 
         {/* Productions Tab */}

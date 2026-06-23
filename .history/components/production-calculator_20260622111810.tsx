@@ -181,7 +181,34 @@ export function ProductionCalculator() {
   const pressures = diameter ? Object.keys(PRODUCT_SPECS[diameter]) : []
 
   function resetForm() {
-    throw new Error('Function not implemented.')
+    // Reset all form fields to initial values
+    setPiecesCount('')
+    setHdPercentage('50')
+    setLdPercentage('50')
+    setWastePercentage('5')
+    setDiameter('25')
+    setPressure('PN6')
+    setSpeed('100')
+    setConductor('')
+    setShift('')
+    
+    // Reset stock inputs to current stock levels
+    setStockHd(stockLevels.hd.toString())
+    setStockLd(stockLevels.ld.toString())
+    setStockBlackColor(stockLevels.blackColor.toString())
+    setStockDryer(stockLevels.dryer.toString())
+    
+    // Reset results and validation
+    setResult(null)
+    setStockStatus([])
+    setValidationError('')
+    setEditingProduction(null)
+    setLastProductionId(null)
+    setProductionState({
+      lastShiftIndex: 0,
+      remainingMinutes: 480,
+      totalPiecesProduced: 0,
+    })
   }
 
   return (
@@ -619,29 +646,29 @@ export function ProductionCalculator() {
                           headers: { 'Content-Type': 'application/json' },
                           body: JSON.stringify({
                             productionId: lastProductionId,
-                            status: 'validated',
+                            status: 'draft',
                           }),
                         })
                         if (response.ok) {
                           toast({
                             title: '✅ Succès',
-                            description: 'Production validée et partagée',
+                            description: 'Production soumise au magasinier pour validation',
                           })
                           setLastProductionId(null)
                         } else {
                           toast({
                             title: '❌ Erreur',
-                            description: 'Erreur lors de la validation',
+                            description: 'Erreur lors de l’envoi au magasinier',
                             variant: 'destructive',
                           })
                         }
                       } catch (error) {
                         toast({
                           title: '❌ Erreur',
-                          description: 'Erreur lors de la validation',
+                          description: 'Erreur lors de l’envoi au magasinier',
                           variant: 'destructive',
                         })
-                        console.error('Erreur lors de la validation:', error)
+                        console.error('Erreur lors de l’envoi au magasinier:', error)
                       } finally {
                         setIsValidating(false)
                       }
@@ -652,12 +679,12 @@ export function ProductionCalculator() {
                     {isValidating ? (
                       <>
                         <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                        Validation...
+                        Envoi...
                       </>
                     ) : (
                       <>
                         <Share2 className="h-4 w-4" />
-                        Valider & Partager
+                        Envoyer au magasinier
                       </>
                     )}
                   </Button>
@@ -739,11 +766,19 @@ export function ProductionCalculator() {
                         {new Date(production.date).toLocaleDateString('fr-FR')}
                       </span>
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        production.status === 'validated'
+                        production.status === 'validated' || production.status === 'validated_by_magasinier'
                           ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                          : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                          : production.status === 'rejected_by_magasinier'
+                            ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                            : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
                       }`}>
-                        {production.status === 'validated' ? 'Validée' : 'Brouillon'}
+                        {production.status === 'validated_by_magasinier'
+                          ? 'Validé par magasinier'
+                          : production.status === 'validated'
+                            ? 'Validée'
+                            : production.status === 'rejected_by_magasinier'
+                              ? 'Refusé par magasinier'
+                              : 'Brouillon'}
                       </span>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">

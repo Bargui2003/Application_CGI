@@ -24,6 +24,7 @@ import {
 } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
 import { isMagasinier } from '@/lib/auth'
+import { AdminIssuesTab } from './admin-issues-tab'
 
 interface ProductionRecord {
   id: string

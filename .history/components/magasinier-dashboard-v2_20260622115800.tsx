@@ -184,6 +184,24 @@ export function MagasinierDashboard() {
     return hasEnoughStock
   }
 
+  const loadPendingProductions = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('/api/production/validate')
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Erreur lors du chargement des productions')
+      }
+      const data = await response.json()
+      setProductions(data)
+    } catch (err: any) {
+      console.error('Error loading productions:', err)
+      setError(err.message || 'Erreur lors du chargement des productions en attente')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleProductionAction = async (productionId: string, action: 'validate' | 'reject') => {
     if (!notes.trim()) {
       setError(`Veuillez ajouter des notes pour la ${action === 'validate' ? 'validation' : 'refus'}`)
@@ -368,14 +386,14 @@ export function MagasinierDashboard() {
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                   <span className="ml-2">Chargement...</span>
                 </div>
-              ) : pendingProductions.length === 0 ? (
+              ) : productions.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
                   <Eye className="h-12 w-12 mx-auto mb-4 opacity-50" />
                   <p>Aucune production en attente de validation</p>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {pendingProductions.map((production) => {
+                  {productions.map((production) => {
                     const hasEnoughStock = checkStockAvailability(production)
                     return (
                       <div key={production.id} className="border rounded-lg p-4 space-y-4">

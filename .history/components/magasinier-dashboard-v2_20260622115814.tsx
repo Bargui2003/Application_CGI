@@ -184,6 +184,24 @@ export function MagasinierDashboard() {
     return hasEnoughStock
   }
 
+  const loadPendingProductions = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('/api/production/validate')
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Erreur lors du chargement des productions')
+      }
+      const data = await response.json()
+      setProductions(data)
+    } catch (err: any) {
+      console.error('Error loading productions:', err)
+      setError(err.message || 'Erreur lors du chargement des productions en attente')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleProductionAction = async (productionId: string, action: 'validate' | 'reject') => {
     if (!notes.trim()) {
       setError(`Veuillez ajouter des notes pour la ${action === 'validate' ? 'validation' : 'refus'}`)

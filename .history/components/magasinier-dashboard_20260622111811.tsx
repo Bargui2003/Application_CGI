@@ -228,6 +228,11 @@ export function MagasinierDashboard() {
           <CheckCircle2 className="h-3 w-3" />
           Validé par magasinier
         </Badge>
+      case 'rejected_by_magasinier':
+        return <Badge variant="destructive" className="flex items-center gap-1">
+          <XCircle className="h-3 w-3" />
+          Refusé par magasinier
+        </Badge>
       default:
         return <Badge variant="outline">{status}</Badge>
     }
@@ -306,23 +311,20 @@ export function MagasinierDashboard() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <TrendingDown className="h-8 w-8 text-orange-500" />
-              <div>
-                <p className="text-2xl font-bold">
-                  {productions.reduce((sum, p) => sum + ((p.hd_quantity || 0) + (p.ld_quantity || 0)), 0)}
-                </p>
-                <p className="text-sm text-muted-foreground">Total matière utilisée</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+                  <XCircle className="h-8 w-8 text-red-500" />
+                  <div>
+                    <p className="text-2xl font-bold">
+                      {productions.filter(p => p.status === 'rejected_by_magasinier').length}
+                    </p>
+                    <p className="text-sm text-muted-foreground">Refusées</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <Package className="h-8 w-8 text-purple-500" />
-              <div>
-                <p className="text-2xl font-bold">
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
                   {productions.reduce((sum, p) => sum + (p.pieces_count || 0), 0)}
                 </p>
                 <p className="text-sm text-muted-foreground">Pièces produites</p>

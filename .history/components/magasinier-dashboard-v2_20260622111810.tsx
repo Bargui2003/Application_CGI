@@ -49,8 +49,7 @@ interface ProductionRecord {
 }
 
 export function MagasinierDashboard() {
-  const [allProductions, setAllProductions] = useState<ProductionRecord[]>([])
-  const [pendingProductions, setPendingProductions] = useState<ProductionRecord[]>([])
+  const [productions, setProductions] = useState<ProductionRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [validating, setValidating] = useState<string | null>(null)
   const [notes, setNotes] = useState('')
@@ -75,40 +74,9 @@ export function MagasinierDashboard() {
   const { toast } = useToast()
 
   useEffect(() => {
-    loadAllProductions()
+    loadPendingProductions()
     loadStockLevels()
   }, [])
-
-  const loadAllProductions = async () => {
-    try {
-      setLoading(true)
-      // Charger toutes les productions
-      const response = await fetch('/api/production')
-      if (!response.ok) {
-        // Fallback: charger seulement les drafts si l'endpoint complet n'existe pas
-        const pendingResponse = await fetch('/api/production/validate')
-        if (!pendingResponse.ok) {
-          throw new Error('Erreur lors du chargement des productions')
-        }
-        const data = await pendingResponse.json()
-        setAllProductions(data)
-        setPendingProductions(data.filter((p: ProductionRecord) => p.status === 'draft'))
-        return
-      }
-      const data = await response.json()
-      setAllProductions(data)
-      setPendingProductions(data.filter((p: ProductionRecord) => p.status === 'draft'))
-    } catch (err: any) {
-      console.error('Error loading productions:', err)
-      setError(err.message || 'Erreur lors du chargement des productions')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const loadPendingProductions = async () => {
-    await loadAllProductions()
-  }
 
   const loadStockLevels = async () => {
     try {
@@ -184,6 +152,24 @@ export function MagasinierDashboard() {
     return hasEnoughStock
   }
 
+  const loadPendingProductions = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('/api/production/validate')
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Erreur lors du chargement des productions')
+      }
+      const data = await response.json()
+      setProductions(data)
+    } catch (err: any) {
+      console.error('Error loading productions:', err)
+      setError(err.message || 'Erreur lors du chargement des productions en attente')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleProductionAction = async (productionId: string, action: 'validate' | 'reject') => {
     if (!notes.trim()) {
       setError(`Veuillez ajouter des notes pour la ${action === 'validate' ? 'validation' : 'refus'}`)
@@ -221,7 +207,7 @@ export function MagasinierDashboard() {
 
       // Reset notes and reload productions
       setNotes('')
-      loadAllProductions()
+      loadPendingProductions()
       loadStockLevels() // Reload stocks after validation
     } catch (err: any) {
       console.error('Error handling production action:', err)
@@ -242,6 +228,11 @@ export function MagasinierDashboard() {
         return <Badge variant="default" className="flex items-center gap-1">
           <CheckCircle2 className="h-3 w-3" />
           Validé par magasinier
+        </Badge>
+      case 'rejected_by_magasinier':
+        return <Badge variant="destructive" className="flex items-center gap-1">
+          <XCircle className="h-3 w-3" />
+          Refusé par magasinier
         </Badge>
       default:
         return <Badge variant="outline">{status}</Badge>
@@ -303,7 +294,7 @@ export function MagasinierDashboard() {
                   <TrendingUp className="h-8 w-8 text-blue-500" />
                   <div>
                     <p className="text-2xl font-bold">
-                      {pendingProductions.length}
+                      {productions.filter(p => p.status === 'draft').length}
                     </p>
                     <p className="text-sm text-muted-foreground">En attente</p>
                   </div>
@@ -317,9 +308,23 @@ export function MagasinierDashboard() {
                   <CheckSquare className="h-8 w-8 text-green-500" />
                   <div>
                     <p className="text-2xl font-bold">
-                      {allProductions.filter(p => p.status === 'validated_by_magasinier').length}
+                      {productions.filter(p => p.status === 'validated_by_magasinier').length}
                     </p>
                     <p className="text-sm text-muted-foreground">Validées aujourd'hui</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <XCircle className="h-8 w-8 text-red-500" />
+                  <div>
+                    <p className="text-2xl font-bold">
+                      {productions.filter(p => p.status === 'rejected_by_magasinier').length}
+                    </p>
+                    <p className="text-sm text-muted-foreground">Refusées</p>
                   </div>
                 </div>
               </CardContent>
@@ -331,7 +336,7 @@ export function MagasinierDashboard() {
                   <TrendingDown className="h-8 w-8 text-orange-500" />
                   <div>
                     <p className="text-2xl font-bold">
-                      {allProductions.filter(p => p.status === 'validated_by_magasinier').reduce((sum, p) => sum + ((p.hd_quantity || 0) + (p.ld_quantity || 0)), 0)}
+                      {productions.reduce((sum, p) => sum + ((p.hd_quantity || 0) + (p.ld_quantity || 0)), 0)}
                     </p>
                     <p className="text-sm text-muted-foreground">Total matière utilisée</p>
                   </div>
@@ -345,7 +350,7 @@ export function MagasinierDashboard() {
                   <Package className="h-8 w-8 text-purple-500" />
                   <div>
                     <p className="text-2xl font-bold">
-                      {allProductions.filter(p => p.status === 'validated_by_magasinier').reduce((sum, p) => sum + (p.pieces_count || 0), 0)}
+                      {productions.reduce((sum, p) => sum + (p.pieces_count || 0), 0)}
                     </p>
                     <p className="text-sm text-muted-foreground">Pièces produites</p>
                   </div>
@@ -368,14 +373,14 @@ export function MagasinierDashboard() {
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                   <span className="ml-2">Chargement...</span>
                 </div>
-              ) : pendingProductions.length === 0 ? (
+              ) : productions.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
                   <Eye className="h-12 w-12 mx-auto mb-4 opacity-50" />
                   <p>Aucune production en attente de validation</p>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {pendingProductions.map((production) => {
+                  {productions.map((production) => {
                     const hasEnoughStock = checkStockAvailability(production)
                     return (
                       <div key={production.id} className="border rounded-lg p-4 space-y-4">
