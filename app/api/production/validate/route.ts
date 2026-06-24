@@ -1,13 +1,26 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+let supabaseAdmin: ReturnType<typeof createClient> | null = null
+
+function getSupabaseAdmin() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error('Supabase environment variables are not configured. Please set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY')
+  }
+
+  if (!supabaseAdmin) {
+    supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+  }
+
+  return supabaseAdmin
+}
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = getSupabaseAdmin()
     const { productionId, status, validatedBy, notes, isMagasinierValidation, action } = await request.json()
 
     if (!productionId || (!status && !action)) {
@@ -200,6 +213,7 @@ export async function POST(request: NextRequest) {
 // GET - Get productions pending validation by magasinier
 export async function GET(request: NextRequest) {
   try {
+    const supabase = getSupabaseAdmin()
     console.log('Fetching productions with draft status...')
     
     const { data: productions, error } = await supabase
