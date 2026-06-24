@@ -20,10 +20,15 @@ import {
   TrendingUp,
   TrendingDown,
   Eye,
-  CheckSquare
+  CheckSquare,
+  Bell,
+  Plus,
+  Minus
 } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
 import { isMagasinier } from '@/lib/auth'
+import { StockManagement } from './stock-management'
+import { StockAlerts } from './stock-alerts'
 
 interface ProductionRecord {
   id: string
@@ -288,9 +293,11 @@ export function MagasinierDashboard() {
 
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="productions">Productions</TabsTrigger>
           <TabsTrigger value="stocks">Stocks</TabsTrigger>
+          <TabsTrigger value="stock-management">Gestion Stock</TabsTrigger>
+          <TabsTrigger value="alerts">Alertes</TabsTrigger>
         </TabsList>
 
         {/* Productions Tab */}
@@ -559,6 +566,16 @@ export function MagasinierDashboard() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Stock Management Tab */}
+        <TabsContent value="stock-management" className="space-y-6">
+          <StockManagement isReadOnly={false} />
+        </TabsContent>
+
+        {/* Alerts Tab */}
+        <TabsContent value="alerts" className="space-y-6">
+          <StockAlerts />
         </TabsContent>
       </Tabs>
     </div>
