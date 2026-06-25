@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/context/auth-context'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,6 +37,7 @@ interface ProfileData {
 
 function ProfileDialog() {
   const { user, refreshSession } = useAuth()
+  const router = useRouter()
   const { toast } = useToast()
   const [isOpen, setIsOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -170,16 +172,14 @@ function ProfileDialog() {
 
   return (
     <>
-      <DropdownMenuItem
-        className="flex items-center gap-2 cursor-pointer"
-        onClick={(e) => {
-          e.preventDefault()
-          setIsOpen(true)
-        }}
-      >
-        <User className="w-4 h-4" />
-        <span>Mon Profil</span>
-      </DropdownMenuItem>
+      <Link href="/profile">
+        <DropdownMenuItem
+          className="flex items-center gap-2 cursor-pointer"
+        >
+          <User className="w-4 h-4" />
+          <span>Mon Profil</span>
+        </DropdownMenuItem>
+      </Link>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-md">

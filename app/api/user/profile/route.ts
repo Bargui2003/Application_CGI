@@ -47,20 +47,18 @@ export async function PUT(request: NextRequest) {
     
     const user = userData[0]
 
-    // Mettre à jour le profil utilisateur
-    // Pour l'instant, seulement les champs de base (username, email) sont mis à jour
-    // Les champs de profil (first_name, last_name, phone, avatar) nécessitent la migration SQL
+    // Mettre à jour le profil utilisateur avec tous les champs
     const updateData: any = {
       username: username || user.username,
       email: email || user.email,
       updated_at: new Date().toISOString(),
     }
 
-    // TODO: Une fois la migration exécutée, ajouter ces champs:
-    // if (firstName !== undefined && firstName !== null) updateData.first_name = firstName
-    // if (lastName !== undefined && lastName !== null) updateData.last_name = lastName
-    // if (phone !== undefined && phone !== null) updateData.phone = phone
-    // if (avatar !== undefined && avatar !== null) updateData.avatar = avatar
+    // Ajouter les champs de profil s'ils sont fournis
+    if (firstName !== undefined && firstName !== null) updateData.first_name = firstName
+    if (lastName !== undefined && lastName !== null) updateData.last_name = lastName
+    if (phone !== undefined && phone !== null) updateData.phone = phone
+    if (avatar !== undefined && avatar !== null) updateData.avatar = avatar
 
     console.log('📝 Données à mettre à jour:', updateData)
 
@@ -68,7 +66,7 @@ export async function PUT(request: NextRequest) {
       .from('users')
       .update(updateData)
       .eq('id', userId)
-      .select('id, username, email, role, created_at')
+      .select('id, username, email, role, first_name, last_name, phone, avatar, created_at')
       .single()
 
     if (error) {
@@ -87,13 +85,13 @@ export async function PUT(request: NextRequest) {
         username: updatedUser.username,
         email: updatedUser.email,
         role: updatedUser.role,
-        firstName: null, // Sera disponible après migration
-        lastName: null,  // Sera disponible après migration
-        phone: null,     // Sera disponible après migration
-        avatar: null,    // Sera disponible après migration
+        firstName: updatedUser.first_name,
+        lastName: updatedUser.last_name,
+        phone: updatedUser.phone,
+        avatar: updatedUser.avatar,
         created_at: updatedUser.created_at,
       },
-      message: 'Profil mis à jour. Note: Les champs supplémentaires nécessitent la migration SQL.'
+      message: 'Profil mis à jour avec succès'
     })
 
   } catch (error) {
