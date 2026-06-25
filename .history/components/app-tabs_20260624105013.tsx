@@ -13,6 +13,8 @@ import { MagasinierDashboard } from '@/components/magasinier-dashboard'
 import { BarChart3, History, Wrench, AlertCircle, Package, FileText, Zap, Store } from 'lucide-react'
 import { Alert } from '@/components/ui/alert'
 import { isMagasinier } from '@/lib/auth'
+import { is } from 'date-fns/locale'
+import { isGeneratorFunction } from 'util/types'
 
 export function AppTabs() {
   const [activeTab, setActiveTab] = useState('calculator')
@@ -67,7 +69,7 @@ export function AppTabs() {
             )}
 
             {/* Stock - Admin & Conducteur */}
-            {(isAdmin || isConducteur || isMagasinierRole) && (
+            {(isAdmin || isConducteur) && (
               <TabsTrigger
                 value="stock"
                 className="w-full justify-start gap-3 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-green-600 dark:data-[state=active]:text-green-400 data-[state=active]:shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-transparent data-[state=active]:border-slate-200 dark:data-[state=active]:border-slate-700"
@@ -78,7 +80,7 @@ export function AppTabs() {
             )}
 
             {/* Alertes - Admin & Conducteur */}
-            {(isAdmin || isConducteur || isMagasinierRole) && (
+            {(isAdmin || isConducteur) && (
               <TabsTrigger
                 value="alerts"
                 className="w-full justify-start gap-3 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-orange-600 dark:data-[state=active]:text-orange-400 data-[state=active]:shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-transparent data-[state=active]:border-slate-200 dark:data-[state=active]:border-slate-700"
@@ -166,7 +168,7 @@ export function AppTabs() {
               )}
 
               {/* Stock - Admin & Conducteur */}
-              {(isAdmin || isConducteur || isMagasinierRole) && (
+              {(isAdmin || isConducteur || isG) && (
                 <TabsTrigger
                   value="stock"
                   className="gap-2 px-4 py-3 rounded-lg font-medium text-sm whitespace-nowrap transition-all duration-200 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-green-600 dark:data-[state=active]:text-green-400 data-[state=active]:shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-transparent data-[state=active]:border-slate-200 dark:data-[state=active]:border-slate-700"
@@ -177,7 +179,7 @@ export function AppTabs() {
               )}
 
               {/* Alertes - Admin & Conducteur */}
-              {(isAdmin || isConducteur || isMagasinierRole) && (
+              {(isAdmin || isConducteur) && (
                 <TabsTrigger
                   value="alerts"
                   className="gap-2 px-4 py-3 rounded-lg font-medium text-sm whitespace-nowrap transition-all duration-200 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-orange-600 dark:data-[state=active]:text-orange-400 data-[state=active]:shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-transparent data-[state=active]:border-slate-200 dark:data-[state=active]:border-slate-700"
@@ -244,14 +246,14 @@ export function AppTabs() {
           )}
 
           {/* Stock */}
-          {(isAdmin || isConducteur || isMagasinierRole) && (
+          {(isAdmin || isConducteur) && (
             <TabsContent value="stock" className="space-y-6 animate-in fade-in-50 duration-300">
               <StockManagement isReadOnly={isConducteur} />
             </TabsContent>
           )}
 
           {/* Alertes */}
-          {(isAdmin || isConducteur || isMagasinierRole) && (
+          {(isAdmin || isConducteur) && (
             <TabsContent value="alerts" className="space-y-6 animate-in fade-in-50 duration-300">
               <StockAlerts />
             </TabsContent>
@@ -265,7 +267,7 @@ export function AppTabs() {
           )}
 
           {/* Spécifications */}
-          {(isAdmin || isConducteur || isMagasinierRole) && (
+          {(isAdmin || isConducteur) && (
             <TabsContent value="specs" className="space-y-6 animate-in fade-in-50 duration-300">
               <ProductSpecifications />
             </TabsContent>

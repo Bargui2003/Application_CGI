@@ -251,7 +251,7 @@ export function AppTabs() {
           )}
 
           {/* Alertes */}
-          {(isAdmin || isConducteur || isMagasinierRole) && (
+          {(isAdmin || isConducteur) && (
             <TabsContent value="alerts" className="space-y-6 animate-in fade-in-50 duration-300">
               <StockAlerts />
             </TabsContent>
@@ -265,7 +265,7 @@ export function AppTabs() {
           )}
 
           {/* Spécifications */}
-          {(isAdmin || isConducteur || isMagasinierRole) && (
+          {(isAdmin || isConducteur) && (
             <TabsContent value="specs" className="space-y-6 animate-in fade-in-50 duration-300">
               <ProductSpecifications />
             </TabsContent>

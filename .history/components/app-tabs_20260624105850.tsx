@@ -9,12 +9,15 @@ import { ProductSpecifications } from '@/components/product-specifications'
 import { StockAlerts } from '@/components/stock-alerts'
 import { StockManagement } from '@/components/stock-management'
 import { ProductionRecords } from '@/components/production-records'
-import { BarChart3, History, Wrench, AlertCircle, Package, FileText, Zap } from 'lucide-react'
+import { MagasinierDashboard } from '@/components/magasinier-dashboard'
+import { BarChart3, History, Wrench, AlertCircle, Package, FileText, Zap, Store } from 'lucide-react'
 import { Alert } from '@/components/ui/alert'
+import { isMagasinier } from '@/lib/auth'
 
 export function AppTabs() {
   const [activeTab, setActiveTab] = useState('calculator')
   const { isAdmin, isConducteur, role } = useAuth()
+  const isMagasinierRole = isMagasinier()
 
   // Déterminer le nombre de tabs à afficher
   const tabCount = [
@@ -23,7 +26,9 @@ export function AppTabs() {
     isAdmin || isConducteur,
     isAdmin,
     isAdmin || isConducteur,
+    isAdmin || isConducteur,
     isConducteur,
+    isMagasinierRole,
   ].filter(Boolean).length
 
   return (
@@ -42,7 +47,7 @@ export function AppTabs() {
                   Production
                 </h2>
                 <p className="text-sm text-slate-600 dark:text-slate-400">
-                  {isAdmin ? '👨‍💼 Admin' : '👷 Conducteur'}
+                  {isAdmin ? '👨‍💼 Admin' : isMagasinierRole ? '📦 Magasinier' : '👷 Conducteur'}
                 </p>
               </div>
             </div>
@@ -105,6 +110,17 @@ export function AppTabs() {
               </TabsTrigger>
             )}
 
+            {/* Tableau de Bord Magasinier - Magasinier only */}
+            {isMagasinierRole && (
+              <TabsTrigger
+                value="magasinier"
+                className="w-full justify-start gap-3 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-green-600 dark:data-[state=active]:text-green-400 data-[state=active]:shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-transparent data-[state=active]:border-slate-200 dark:data-[state=active]:border-slate-700"
+              >
+                <Store className="h-5 w-5 shrink-0" />
+                <span>Magasinier</span>
+              </TabsTrigger>
+            )}
+
             {/* Fiches de Production - Conducteur only */}
             {isConducteur && (
               <TabsTrigger
@@ -130,7 +146,7 @@ export function AppTabs() {
                   Production
                 </h2>
                 <p className="text-sm text-slate-600 dark:text-slate-400">
-                  {isAdmin ? '👨‍💼 Admin' : '👷 Conducteur'}
+                  {isAdmin ? '👨‍💼 Admin' : isMagasinierRole ? '📦 Magasinier' : '👷 Conducteur'}
                 </p>
               </div>
             </div>
@@ -193,11 +209,22 @@ export function AppTabs() {
                 </TabsTrigger>
               )}
 
+              {/* Tableau de Bord Magasinier - Magasinier only */}
+              {isMagasinierRole && (
+                <TabsTrigger
+                  value="magasinier"
+                  className="gap-2 px-4 py-3 rounded-lg font-medium whitespace-nowrap transition-all duration-200 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-green-600 dark:data-[state=active]:text-green-400 data-[state=active]:shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-transparent data-[state=active]:border-slate-200 dark:data-[state=active]:border-slate-700"
+                >
+                  <Store className="h-4 w-4 shrink-0" />
+                  <span>Magasinier</span>
+                </TabsTrigger>
+              )}
+
               {/* Fiches de Production - Conducteur only */}
               {isConducteur && (
                 <TabsTrigger
                   value="productions"
-                  className="gap-2 px-4 py-3 rounded-lg font-medium text-sm whitespace-nowrap transition-all duration-200 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-green-600 dark:data-[state=active]:text-green-400 data-[state=active]:shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-transparent data-[state=active]:border-slate-200 dark:data-[state=active]:border-slate-700"
+                  className="gap-2 px-4 py-3 rounded-lg font-medium whitespace-nowrap transition-all duration-200 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-green-600 dark:data-[state=active]:text-green-400 data-[state=active]:shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-transparent data-[state=active]:border-slate-200 dark:data-[state=active]:border-slate-700"
                 >
                   <FileText className="h-4 w-4 shrink-0" />
                   <span>Fiches</span>
@@ -251,6 +278,13 @@ export function AppTabs() {
             </TabsContent>
           )}
 
+          {/* Tableau de Bord Magasinier - Magasinier only */}
+          {isMagasinierRole && (
+            <TabsContent value="magasinier" className="space-y-6 animate-in fade-in-50 duration-300">
+              <MagasinierDashboard />
+            </TabsContent>
+          )}
+
           {/* Message si conducteur */}
           {isConducteur && (
             <div className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-700">
@@ -271,6 +305,34 @@ export function AppTabs() {
                       </div>
                       <div className="text-xs text-blue-700 dark:text-blue-300 pt-1">
                         💡 Pour accéder à la calculatrice et l'historique, contactez un administrateur.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Alert>
+            </div>
+          )}
+
+          {/* Message si magasinier */}
+          {isMagasinierRole && (
+            <div className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-700">
+              <Alert className="bg-linear-to-br from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 border border-green-200 dark:border-green-800 shadow-md hover:shadow-lg transition-shadow duration-300 rounded-lg">
+                <div className="flex gap-4">
+                  <div className="shrink-0 pt-0.5">
+                    <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900">
+                      <Store className="h-5 w-5 text-green-600 dark:text-green-400" />
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-bold text-green-900 dark:text-green-100 mb-2 text-base">
+                      Vue Magasinier Activée
+                    </h4>
+                    <div className="text-sm text-green-800 dark:text-green-200 leading-relaxed space-y-2">
+                      <div>
+                        ✓ Vous avez accès au : <span className="font-semibold">Tableau de Bord</span> pour valider les productions en attente
+                      </div>
+                      <div className="text-xs text-green-700 dark:text-green-300 pt-1">
+                        💡 Vous pouvez valider les productions en statut "Brouillon" et mettre à jour les stocks.
                       </div>
                     </div>
                   </div>
