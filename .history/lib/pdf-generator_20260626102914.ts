@@ -516,6 +516,10 @@ function generateShiftSheet(
           <div class="page-indicator">Page ${pageNumber} sur ${totalPages}</div>
         </div>
       </div>
+ 
+      <div class="footer">
+        <p>Fiche générée automatiquement par COMPTOIR GUETAT INDUSTRIE - ${new Date().toLocaleString('fr-FR')}</p>
+      </div>
     </body>
     </html>
   `

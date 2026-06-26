@@ -440,7 +440,7 @@ function generateShiftSheet(
           </div>
           <div class="info-item">
             <div class="info-label">Conducteur</div>
-            <div class="info-value">${conductor || 'À remplir'}</div>
+            <div class="info-value">${'À remplir'}</div>
           </div>
         </div>
  

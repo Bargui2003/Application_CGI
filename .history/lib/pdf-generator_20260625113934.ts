@@ -339,7 +339,7 @@ function generateShiftSheet(
   const actualShiftHours = `${fmt(actualStartH, actualStartM)} - ${fmt(actualEndH, actualEndM)}`
   const fullShiftHours = `${fmt(shiftStartHour, 0)} - ${fmt(shiftEndHour, 0)}`
  
-  const tableRows = Array.from({ length: 35 }, (_, i) => `
+  const tableRows = Array.from({ length: 8 }, (_, i) => `
     <tr style="border: 1px solid #999;">
       <td style="border: 1px solid #999; padding: 8px; text-align: center;">${i + 1}</td>
       <td style="border: 1px solid #999; padding: 8px;"></td>
@@ -515,6 +515,10 @@ function generateShiftSheet(
           </table>
           <div class="page-indicator">Page ${pageNumber} sur ${totalPages}</div>
         </div>
+      </div>
+ 
+      <div class="footer">
+        <p>Fiche générée automatiquement par COMPTOIR GUETAT INDUSTRIE - ${new Date().toLocaleString('fr-FR')}</p>
       </div>
     </body>
     </html>
