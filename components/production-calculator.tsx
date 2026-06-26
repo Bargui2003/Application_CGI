@@ -10,6 +10,7 @@ import { AlertTriangle, CheckCircle2, Save, FileText, Share2, Zap, Calculator, E
 import { useProduction, ProductionRecord, StockLevels } from '@/context/production-context-supabase'
 import { useToast } from '@/components/ui/use-toast'
 import { generateProductionSheet, downloadPDF, ProductionStatus } from '@/lib/pdf-generator'
+import { calculateCalibreChangeLoss } from '@/lib/calibre-change'
 
 interface CalculationResult {
   totalQuantity: number
@@ -24,6 +25,9 @@ interface CalculationResult {
   speed: number
   productionTime: number
   totalLength: number
+  calibreChangeLoss?: number // Time loss in hours due to diameter change
+  calibreChangeLossMinutes?: number // Time loss in minutes
+  previousDiameter?: string // Previous diameter for reference
 }
 
 interface StockStatus {
@@ -53,6 +57,8 @@ export function ProductionCalculator() {
   const [speed, setSpeed] = useState('100')
   const [conductor, setConductor] = useState('')
   const [shift, setShift] = useState('')
+  const [previousDiameter, setPreviousDiameter] = useState<string | null>(null)
+  const [showCalibreWarning, setShowCalibreWarning] = useState(false)
   
   const [stockHd, setStockHd] = useState('500')
   const [stockLd, setStockLd] = useState('500')
@@ -141,7 +147,19 @@ export function ProductionCalculator() {
 
     // Calculate total length: 1 pièce = 1 rouleau = 100 mètres
     const totalLength = pieces * 100 // meters (chaque rouleau = 100m)
-    const productionTime = totalLength / speedValue // minutes
+    let productionTime = totalLength / speedValue // minutes
+
+    // Calculate calibre change loss if there's a previous diameter
+    let calibreChangeLoss = 0
+    let calibreChangeLossMinutes = 0
+    if (previousDiameter && previousDiameter !== diameter) {
+      calibreChangeLoss = calculateCalibreChangeLoss(previousDiameter, diameter)
+      calibreChangeLossMinutes = calibreChangeLoss * 60
+      productionTime += calibreChangeLossMinutes // Add the lost time to production time
+      setShowCalibreWarning(true)
+    } else {
+      setShowCalibreWarning(false)
+    }
 
     const calculation: CalculationResult = {
       totalQuantity: total,
@@ -156,6 +174,9 @@ export function ProductionCalculator() {
       speed: speedValue,
       productionTime,
       totalLength,
+      calibreChangeLoss,
+      calibreChangeLossMinutes,
+      previousDiameter: previousDiameter || undefined,
     }
 
     setResult(calculation)
@@ -270,6 +291,26 @@ export function ProductionCalculator() {
                   </div>
                   <p className="text-xs text-blue-700 dark:text-blue-300 font-medium">
                     💡 Poids/pièce: <span className="font-bold">{PRODUCT_SPECS[diameter][pressure].min}-{PRODUCT_SPECS[diameter][pressure].max} kg</span>
+                  </p>
+                </div>
+                
+                {/* Previous Diameter Selection for Calibre Change */}
+                <div className="mt-3 p-3 bg-amber-50 dark:bg-amber-950/20 rounded-lg border border-amber-200 dark:border-amber-700">
+                  <p className="text-xs font-semibold text-amber-900 dark:text-amber-200 mb-2 uppercase">⚙️ Changement de Calibre (Optionnel)</p>
+                  <select
+                    value={previousDiameter || ''}
+                    onChange={(e) => setPreviousDiameter(e.target.value || null)}
+                    className="w-full px-3 py-2 border border-amber-300 dark:border-amber-700 rounded-md bg-white dark:bg-slate-800 text-sm text-foreground focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all"
+                  >
+                    <option value="">Aucun changement de calibre</option>
+                    {diameters.filter(d => d !== diameter).map((d) => (
+                      <option key={d} value={d}>
+                        Ø {d} mm → Ø {diameter} mm
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-amber-700 dark:text-amber-300 mt-1.5">
+                    Sélectionnez le calibre précédent pour calculer automatiquement la perte de temps
                   </p>
                 </div>
               </div>
@@ -484,6 +525,34 @@ export function ProductionCalculator() {
                   <p className="text-3xl font-bold text-teal-600 dark:text-teal-400 mt-2">{result.totalLength.toFixed(0)} <span className="text-lg">m</span></p>
                 </div>
               </div>
+
+              {/* Calibre Change Warning */}
+              {showCalibreWarning && result.calibreChangeLoss && result.calibreChangeLoss > 0 && (
+                <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-950/20 border-2 border-amber-300 dark:border-amber-700 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
+                    <div className="flex-1">
+                      <h4 className="font-bold text-amber-900 dark:text-amber-100 mb-2">⚙️ Changement de Calibre Détecté</h4>
+                      <p className="text-sm text-amber-800 dark:text-amber-200 mb-2">
+                        Passage de Ø{result.previousDiameter}mm à Ø{diameter}mm
+                      </p>
+                      <div className="grid grid-cols-2 gap-3 mt-3">
+                        <div className="bg-white dark:bg-slate-800 p-2 rounded border border-amber-200 dark:border-amber-700">
+                          <p className="text-xs text-amber-600 dark:text-amber-300 font-semibold uppercase">Perte de Temps</p>
+                          <p className="text-lg font-bold text-amber-700 dark:text-amber-200">{result.calibreChangeLoss}h</p>
+                        </div>
+                        <div className="bg-white dark:bg-slate-800 p-2 rounded border border-amber-200 dark:border-amber-700">
+                          <p className="text-xs text-amber-600 dark:text-amber-300 font-semibold uppercase">Soit</p>
+                          <p className="text-lg font-bold text-amber-700 dark:text-amber-200">{result.calibreChangeLossMinutes} min</p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-amber-700 dark:text-amber-300 mt-2 italic">
+                        Cette perte de temps a été automatiquement ajoutée au temps de production.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -574,6 +643,8 @@ export function ProductionCalculator() {
                         })
                         if (production?.id) {
                           setLastProductionId(production.id)
+                          // Update previous diameter for next production
+                          setPreviousDiameter(diameter)
                           toast({
                             title: '✅ Succès',
                             description: 'Production sauvegardée avec succès',

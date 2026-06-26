@@ -25,6 +25,9 @@ export interface ProductionRecord {
   status?: 'draft' | 'validated' | 'validated_by_magasinier' | 'rejected_by_magasinier'
   magasinierNotes?: string
   rejectionReason?: string
+  calibreChangeLoss?: number // Time loss in hours due to diameter change
+  calibreChangeLossMinutes?: number // Time loss in minutes
+  previousDiameter?: string // Previous diameter for calibre change tracking
 }
 
 export interface StockLevels {
