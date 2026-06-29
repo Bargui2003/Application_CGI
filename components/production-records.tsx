@@ -8,30 +8,31 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { useProduction } from '@/context/production-context-supabase'
 import { useAuth } from '@/context/auth-context'
+import { useLanguage } from '@/context/language-context'
 import { Download, Filter, Search, CheckCircle2, Clock, AlertCircle, Printer, XCircle } from 'lucide-react'
 import { downloadPDF, generateProductionSheet } from '@/lib/pdf-generator'
 
-const getStatusBadge = (status: string) => {
+const getStatusBadge = (status: string, t: any) => {
   switch (status) {
     case 'draft':
       return <Badge variant="secondary" className="flex items-center gap-1">
         <Clock className="h-3 w-3" />
-        Brouillon
+        {t('records.draft')}
       </Badge>
     case 'validated_by_magasinier':
       return <Badge variant="default" className="flex items-center gap-1 bg-green-50 text-green-700 border-green-200">
         <CheckCircle2 className="h-3 w-3" />
-        Validé par magasinier
+        {t('records.validated')}
       </Badge>
     case 'rejected_by_magasinier':
       return <Badge variant="destructive" className="flex items-center gap-1">
         <XCircle className="h-3 w-3" />
-        Refusé par magasinier
+        {t('records.rejected')}
       </Badge>
     default:
       return <Badge variant="outline" className="flex items-center gap-1">
         <CheckCircle2 className="h-3 w-3" />
-        Validée
+        {t('records.validated')}
       </Badge>
   }
 }
@@ -39,6 +40,7 @@ const getStatusBadge = (status: string) => {
 export function ProductionRecords() {
   const { productionHistory } = useProduction()
   const { isAdmin, isConducteur } = useAuth()
+  const { t } = useLanguage()
   const [searchTerm, setSearchTerm] = useState('')
   const [filterDiameter, setFilterDiameter] = useState('')
   const [filterPressure, setFilterPressure] = useState('')
@@ -207,7 +209,7 @@ export function ProductionRecords() {
                       <h4 className="font-bold text-lg">
                         Ø{production.diameter}mm - {production.pressure}
                       </h4>
-                      {getStatusBadge(production.status || 'validated')}
+                      {getStatusBadge(production.status || 'validated', t)}
                     </div>
                     <p className="text-sm text-muted-foreground">
                       {new Date(new Date(production.date).getTime() + 3600000).toLocaleString('fr-FR')}

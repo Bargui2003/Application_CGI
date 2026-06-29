@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { AlertTriangle, AlertCircle, TrendingDown, Bell } from 'lucide-react'
 import { useProduction } from '@/context/production-context-supabase'
+import { useLanguage } from '@/context/language-context'
 
 interface Alert {
   id: string
@@ -33,6 +34,7 @@ const CRITICAL_THRESHOLDS = {
 
 export function StockAlerts() {
   const { stockLevels } = useProduction()
+  const { t } = useLanguage()
 
   const alerts = useMemo(() => {
     const generatedAlerts: Alert[] = []
@@ -43,21 +45,21 @@ export function StockAlerts() {
       generatedAlerts.push({
         id: 'hd-critical',
         type: 'critical',
-        item: 'HD (Haute Densité)',
+        item: t('alerts.hdStock'),
         currentStock: stockLevels.hd,
         minimumThreshold: CRITICAL_THRESHOLDS.hd,
-        status: 'Niveau Critique',
-        message: 'Le stock est inférieur au seuil critique. Une réapprovision immédiate est recommandée.',
+        status: t('alerts.critical'),
+        message: t('alerts.immediate'),
         percentage: hdPercentage,
       })
     } else if (stockLevels.hd <= MINIMUM_THRESHOLDS.hd) {
       generatedAlerts.push({
         id: 'hd-warning',
         type: 'warning',
-        item: 'HD (Haute Densité)',
+        item: t('alerts.hdStock'),
         currentStock: stockLevels.hd,
         minimumThreshold: MINIMUM_THRESHOLDS.hd,
-        status: 'Stock Faible',
+        status: t('alerts.warning'),
         message: 'Envisagez une réapprovision au cours du prochain cycle de production.',
         percentage: hdPercentage,
       })

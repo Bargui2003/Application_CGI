@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/context/auth-context'
+import { useLanguage } from '@/context/language-context'
 import { useRouter } from 'next/navigation'
 import {
   DropdownMenu,
@@ -36,6 +37,7 @@ interface ProfileData {
 
 function ProfileDialog() {
   const { user, refreshSession } = useAuth()
+  const { t } = useLanguage()
   const { toast } = useToast()
   const [isOpen, setIsOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
