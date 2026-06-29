@@ -41,17 +41,17 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   // Translation function
   const t = (key: keyof typeof translations.fr, variables?: Record<string, string>): string => {
-    let text = translations[language][key as keyof typeof translations.fr] || 
+    let text = (translations[language][key as keyof typeof translations.fr] || 
                translations.fr[key as keyof typeof translations.fr] || 
-               key
+               key) as string
     
     if (variables) {
       Object.entries(variables).forEach(([varName, value]) => {
-        text = text.replace(`{${varName}}`, value)
+        text = (text as string).replace(`{${varName}}`, value)
       })
     }
     
-    return text
+    return text as string
   }
 
   // Always provide context, even before mount to prevent hydration errors

@@ -409,6 +409,26 @@ export const translations = {
     'dashboard.magasinier.current': 'Actuel:',
     'dashboard.magasinier.update': 'Mettre à jour',
     'dashboard.magasinier.updated': 'Stocks mis à jour avec succès',
+
+    // Product Specifications Page
+    'specs.title': 'Spécifications des Produits',
+    'specs.description': 'Exigences de poids pour différentes tailles de tuyaux et classes de pression',
+    'specs.pipes': 'Tuyaux',
+    'specs.pressureClass': 'Classe de Pression',
+    'specs.weightRange': 'Plage de Poids',
+    'specs.minWeight': 'Poids Min',
+    'specs.maxWeight': 'Poids Max',
+    'specs.diameter': 'Diamètre',
+    'specs.pressure': 'Pression',
+    'specs.weight': 'Poids',
+    'specs.kg': 'kg',
+    'specs.mm': 'mm',
+    'specs.PN6': 'PN6',
+    'specs.PN8': 'PN8',
+    'specs.PN10': 'PN10',
+    'specs.PN10F': 'PN10F',
+    'specs.noPipes': 'Aucune spécification trouvée',
+    'specs.noSpecs': 'Aucune spécification disponible pour ce tuyau',
   },
   zh: {
     // Header & Navigation
@@ -611,7 +631,7 @@ export const translations = {
     'calc.printSheet': '打印单',
     'calc.shareProduction': '共享生产',
     'calc.validation.invalidSpeed': '速度必须大于 0',
-    'calc.validation.invalidSpecs': '产品规格无效',
+    'calc.validation.invalidSpecs': '产品规���无效',
     'calc.validation.hdLdSum': 'HD% + LD% 必须等于 100%',
     'calc.validation.enterQuantity': '请输入件数',
     'calc.results.totalQuantity': '总数量',
@@ -818,11 +838,31 @@ export const translations = {
     'dashboard.magasinier.current': '当前:',
     'dashboard.magasinier.update': '更新',
     'dashboard.magasinier.updated': '库存已成功更新',
+
+    // Product Specifications Page
+    'specs.title': '产品规格',
+    'specs.description': '不同尺寸管道和压力等级的重量要求',
+    'specs.pipes': '管',
+    'specs.pressureClass': '压力等级',
+    'specs.weightRange': '重量范围',
+    'specs.minWeight': '最小重量',
+    'specs.maxWeight': '最大重量',
+    'specs.diameter': '直径',
+    'specs.pressure': '压力',
+    'specs.weight': '重量',
+    'specs.kg': '千克',
+    'specs.mm': '毫米',
+    'specs.PN6': 'PN6',
+    'specs.PN8': 'PN8',
+    'specs.PN10': 'PN10',
+    'specs.PN10F': 'PN10F',
+    'specs.noPipes': '找不到规格',
+    'specs.noSpecs': '此管道没有可用的规格',
   },
 } as const;
 
 export function t(key: keyof typeof translations.fr, language: Language = 'fr', variables?: Record<string, string>): string {
-  let text = translations[language][key as keyof typeof translations.fr] || translations.fr[key as keyof typeof translations.fr] || key;
+  let text = (translations[language][key as keyof typeof translations.fr] || translations.fr[key as keyof typeof translations.fr] || key) as string;
   
   if (variables) {
     Object.entries(variables).forEach(([varName, value]) => {
