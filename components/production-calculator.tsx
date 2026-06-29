@@ -11,6 +11,7 @@ import { useProduction, ProductionRecord, StockLevels } from '@/context/producti
 import { useToast } from '@/components/ui/use-toast'
 import { generateProductionSheet, downloadPDF, ProductionStatus } from '@/lib/pdf-generator'
 import { calculateCalibreChangeLoss } from '@/lib/calibre-change'
+import { useLanguage } from '@/context/language-context'
 
 interface CalculationResult {
   totalQuantity: number
@@ -48,6 +49,7 @@ const PRODUCT_SPECS: Record<string, Record<string, { min: number; max: number }>
 }
 
 export function ProductionCalculator() {
+  const { t } = useLanguage()
   const [piecesCount, setPiecesCount] = useState('')
   const [hdPercentage, setHdPercentage] = useState('50')
   const [ldPercentage, setLdPercentage] = useState('50')
@@ -106,7 +108,7 @@ export function ProductionCalculator() {
     setValidationError('')
     
     if (!piecesCount) {
-      setValidationError('Veuillez entrer le nombre de pièces')
+      setValidationError(t('calc.quantity'))
       return
     }
 
@@ -114,7 +116,7 @@ export function ProductionCalculator() {
     const ldPct = parseFloat(ldPercentage)
     
     if (hdPct + ldPct !== 100) {
-      setValidationError('HD% + LD% doit égaler 100%')
+      setValidationError('HD% + LD% must equal 100%')
       return
     }
 

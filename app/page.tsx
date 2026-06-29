@@ -3,12 +3,14 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/auth-context'
+import { useLanguage } from '@/context/language-context'
 import { Header } from '@/components/header'
 import { AppTabs } from '@/components/app-tabs'
 
 export default function Home() {
   const router = useRouter()
   const { isAuthenticated, isLoading } = useAuth()
+  const { t } = useLanguage()
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -45,7 +47,7 @@ export default function Home() {
           </div>
           <div className="space-y-2">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-slate-50 tracking-tight">
-              Tableau de Bord Production
+              {t('dashboard.title')}
             </h2>
             <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl">
               Optimisez votre production de tuyaux en polyéthylène avec des calculs de matériaux automatisés et un suivi des stocks en temps réel.

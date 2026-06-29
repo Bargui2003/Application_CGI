@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/next'
 import { Footer } from '@/components/footer'
 import { AuthProvider } from '@/context/auth-context'
 import { ProductionProvider } from '@/context/production-context-supabase'
+import { LanguageProvider } from '@/context/language-context'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -49,14 +50,16 @@ export default function RootLayout({
         className="font-sans antialiased flex flex-col min-h-screen"
         suppressHydrationWarning
       >
-        <AuthProvider>
-          <ProductionProvider>
-            <div className="flex-1">
-              {children}
-            </div>
-            <Footer />
-          </ProductionProvider>
-        </AuthProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <ProductionProvider>
+              <div className="flex-1">
+                {children}
+              </div>
+              <Footer />
+            </ProductionProvider>
+          </AuthProvider>
+        </LanguageProvider>
         <Analytics />
       </body>
     </html>

@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { useAuth } from '@/context/auth-context'
 import { UserProfile } from './user-profile'
+import { LanguageSwitcher } from './language-switcher'
 
 export function Header() {
   const { isAuthenticated, isAdmin, isConducteur, role } = useAuth()
@@ -34,7 +35,10 @@ export function Header() {
           </div>
 
           {/* Right Section */}
-          <div className="flex items-center gap-4 sm:gap-6">
+          <div className="flex items-center gap-3 sm:gap-6">
+            {/* Language Switcher */}
+            <LanguageSwitcher />
+
             {/* User Info - Visible on larger screens */}
             {isAuthenticated && (
               <div className="hidden md:flex flex-col items-end justify-center">

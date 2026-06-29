@@ -1,0 +1,388 @@
+export type Language = 'fr' | 'zh';
+
+export const translations = {
+  fr: {
+    // Header & Navigation
+    'header.logout': 'Déconnexion',
+    'header.language': 'Langue',
+    'header.french': 'Français',
+    'header.chinese': '中文',
+    'header.profile': 'Profil',
+
+    // Common Actions
+    'action.save': 'Enregistrer',
+    'action.cancel': 'Annuler',
+    'action.delete': 'Supprimer',
+    'action.edit': 'Modifier',
+    'action.add': 'Ajouter',
+    'action.close': 'Fermer',
+    'action.export': 'Exporter',
+    'action.import': 'Importer',
+    'action.download': 'Télécharger',
+    'action.upload': 'Télécharger',
+    'action.search': 'Rechercher',
+    'action.filter': 'Filtrer',
+    'action.refresh': 'Actualiser',
+    'action.submit': 'Soumettre',
+
+    // Login
+    'login.title': 'Connexion',
+    'login.email': 'Email',
+    'login.password': 'Mot de passe',
+    'login.rememberMe': 'Se souvenir de moi',
+    'login.forgotPassword': 'Mot de passe oublié?',
+    'login.signin': 'Se connecter',
+    'login.signup': 'S\'inscrire',
+    'login.noAccount': 'Pas de compte?',
+    'login.haveAccount': 'Vous avez déjà un compte?',
+    'login.invalidCredentials': 'Email ou mot de passe invalide',
+    'login.error': 'Erreur de connexion',
+
+    // Main Dashboard
+    'dashboard.title': 'Tableau de Bord',
+    'dashboard.welcome': 'Bienvenue',
+    'dashboard.overview': 'Aperçu',
+    'dashboard.statistics': 'Statistiques',
+    'dashboard.recentActivity': 'Activité récente',
+
+    // Conductor Dashboard
+    'conductor.title': 'Tableau de Bord Conducteur',
+    'conductor.production': 'Production',
+    'conductor.productionCalc': 'Calculatrice de Production',
+    'conductor.orders': 'Commandes',
+    'conductor.status': 'Statut',
+    'conductor.time': 'Temps',
+    'conductor.quantity': 'Quantité',
+    'conductor.startShift': 'Commencer le Quart',
+    'conductor.endShift': 'Terminer le Quart',
+    'conductor.currentShift': 'Quart Actuel',
+    'conductor.noActiveShift': 'Aucun quart actif',
+
+    // Magasinier Dashboard
+    'magasinier.title': 'Tableau de Bord Magasinier',
+    'magasinier.stockLevels': 'Niveaux de Stock',
+    'magasinier.inventory': 'Inventaire',
+    'magasinier.inbound': 'Entrées',
+    'magasinier.outbound': 'Sorties',
+    'magasinier.warehouse': 'Entrepôt',
+    'magasinier.validate': 'Valider',
+    'magasinier.reject': 'Rejeter',
+    'magasinier.notes': 'Notes',
+    'magasinier.verifyProduction': 'Vérifier Production',
+
+    // Production Calculator
+    'calc.title': 'Calculatrice de Production',
+    'calc.quantity': 'Quantité (kg)',
+    'calc.diameter': 'Diamètre (mm)',
+    'calc.pressure': 'Pression',
+    'calc.speed': 'Vitesse (%)',
+    'calc.waste': 'Déchets (%)',
+    'calc.hdPercentage': 'Pourcentage HD (%)',
+    'calc.ldPercentage': 'Pourcentage LD (%)',
+    'calc.piecesCount': 'Nombre de Pièces',
+    'calc.weightPerPiece': 'Poids/Pièce (kg)',
+    'calc.totalLength': 'Longueur Totale (m)',
+    'calc.productionTime': 'Temps de Production',
+    'calc.calculate': 'Calculer',
+    'calc.results': 'Résultats',
+    'calc.diameter25': 'Ø25',
+    'calc.diameter32': 'Ø32',
+    'calc.diameter40': 'Ø40',
+    'calc.diameter50': 'Ø50',
+    'calc.diameter63': 'Ø63',
+    'calc.diameter75': 'Ø75',
+    'calc.diameter90': 'Ø90',
+    'calc.hdQuantity': 'Quantité HD',
+    'calc.ldQuantity': 'Quantité LD',
+    'calc.usefulQuantity': 'Quantité Utile',
+    'calc.totalQuantity': 'Quantité Totale',
+    'calc.dryerQuantity': 'Quantité Sécheur',
+    'calc.blackColorQuantity': 'Quantité Couleur Noire',
+
+    // Calibre Change
+    'calibre.title': 'Changement de Calibre',
+    'calibre.detected': 'Changement de Calibre Détecté',
+    'calibre.changeSummary': 'Passage de Ø{from}mm à Ø{to}mm',
+    'calibre.timeLoss': 'Perte de Temps',
+    'calibre.timeLossMinutes': 'Perte (minutes)',
+    'calibre.automaticallyAdded': 'Cette perte de temps a été automatiquement ajoutée au temps de production',
+    'calibre.optional': 'Changement de Calibre (Optionnel)',
+    'calibre.noChange': 'Aucun changement de calibre',
+    'calibre.selectChange': 'Sélectionnez le calibre précédent pour calculer automatiquement la perte de temps',
+
+    // Stock & Inventory
+    'stock.name': 'Nom',
+    'stock.quantity': 'Quantité',
+    'stock.minLevel': 'Niveau Minimum',
+    'stock.maxLevel': 'Niveau Maximum',
+    'stock.lastUpdated': 'Dernière Mise à Jour',
+    'stock.addProduct': 'Ajouter Produit',
+    'stock.updateStock': 'Mettre à Jour Stock',
+    'stock.lowStock': 'Stock Faible',
+    'stock.outOfStock': 'Rupture de Stock',
+
+    // Forms & Validation
+    'form.required': 'Requis',
+    'form.invalid': 'Invalide',
+    'form.saved': 'Enregistré avec succès',
+    'form.error': 'Erreur lors de l\'enregistrement',
+    'form.confirmDelete': 'Êtes-vous sûr de vouloir supprimer?',
+    'form.deleteConfirmed': 'Supprimé avec succès',
+
+    // Messages & Alerts
+    'message.success': 'Succès',
+    'message.error': 'Erreur',
+    'message.warning': 'Avertissement',
+    'message.info': 'Information',
+    'message.loading': 'Chargement...',
+    'message.noData': 'Aucune donnée',
+    'message.empty': 'Vide',
+
+    // Time & Date
+    'time.today': 'Aujourd\'hui',
+    'time.yesterday': 'Hier',
+    'time.thisWeek': 'Cette Semaine',
+    'time.thisMonth': 'Ce Mois',
+    'time.january': 'Janvier',
+    'time.february': 'Février',
+    'time.march': 'Mars',
+    'time.april': 'Avril',
+    'time.may': 'Mai',
+    'time.june': 'Juin',
+    'time.july': 'Juillet',
+    'time.august': 'Août',
+    'time.september': 'Septembre',
+    'time.october': 'Octobre',
+    'time.november': 'Novembre',
+    'time.december': 'Décembre',
+    'time.monday': 'Lundi',
+    'time.tuesday': 'Mardi',
+    'time.wednesday': 'Mercredi',
+    'time.thursday': 'Jeudi',
+    'time.friday': 'Vendredi',
+    'time.saturday': 'Samedi',
+    'time.sunday': 'Dimanche',
+
+    // PDF & Reports
+    'pdf.productionSheet': 'Fiche de Production',
+    'pdf.generateReport': 'Générer Rapport',
+    'pdf.exportPDF': 'Exporter en PDF',
+    'pdf.printReport': 'Imprimer Rapport',
+
+    // User Roles
+    'role.admin': 'Administrateur',
+    'role.conductor': 'Conducteur',
+    'role.magasinier': 'Magasinier',
+    'role.manager': 'Gestionnaire',
+
+    // Settings
+    'settings.title': 'Paramètres',
+    'settings.language': 'Langue',
+    'settings.theme': 'Thème',
+    'settings.notifications': 'Notifications',
+    'settings.security': 'Sécurité',
+    'settings.account': 'Compte',
+    'settings.changePassword': 'Changer le Mot de Passe',
+    'settings.currentPassword': 'Mot de Passe Actuel',
+    'settings.newPassword': 'Nouveau Mot de Passe',
+    'settings.confirmPassword': 'Confirmer le Mot de Passe',
+  },
+  zh: {
+    // Header & Navigation
+    'header.logout': '登出',
+    'header.language': '语言',
+    'header.french': 'Français',
+    'header.chinese': '中文',
+    'header.profile': '档案',
+
+    // Common Actions
+    'action.save': '保存',
+    'action.cancel': '取消',
+    'action.delete': '删除',
+    'action.edit': '编辑',
+    'action.add': '添加',
+    'action.close': '关闭',
+    'action.export': '导出',
+    'action.import': '导入',
+    'action.download': '下载',
+    'action.upload': '上传',
+    'action.search': '搜索',
+    'action.filter': '筛选',
+    'action.refresh': '刷新',
+    'action.submit': '提交',
+
+    // Login
+    'login.title': '登录',
+    'login.email': '邮箱',
+    'login.password': '密码',
+    'login.rememberMe': '记住我',
+    'login.forgotPassword': '忘记密码?',
+    'login.signin': '登录',
+    'login.signup': '注册',
+    'login.noAccount': '没有帐户?',
+    'login.haveAccount': '已有帐户?',
+    'login.invalidCredentials': '邮箱或密码无效',
+    'login.error': '登录错误',
+
+    // Main Dashboard
+    'dashboard.title': '仪表板',
+    'dashboard.welcome': '欢迎',
+    'dashboard.overview': '概览',
+    'dashboard.statistics': '统计数据',
+    'dashboard.recentActivity': '最近活动',
+
+    // Conductor Dashboard
+    'conductor.title': '导管员仪表板',
+    'conductor.production': '生产',
+    'conductor.productionCalc': '生产计算器',
+    'conductor.orders': '订单',
+    'conductor.status': '状态',
+    'conductor.time': '时间',
+    'conductor.quantity': '数量',
+    'conductor.startShift': '开始轮班',
+    'conductor.endShift': '结束轮班',
+    'conductor.currentShift': '当前轮班',
+    'conductor.noActiveShift': '没有活动轮班',
+
+    // Magasinier Dashboard
+    'magasinier.title': '库管员仪表板',
+    'magasinier.stockLevels': '库存水平',
+    'magasinier.inventory': '库存',
+    'magasinier.inbound': '入库',
+    'magasinier.outbound': '出库',
+    'magasinier.warehouse': '仓库',
+    'magasinier.validate': '验证',
+    'magasinier.reject': '拒绝',
+    'magasinier.notes': '备注',
+    'magasinier.verifyProduction': '验证生产',
+
+    // Production Calculator
+    'calc.title': '生产计算器',
+    'calc.quantity': '数量 (kg)',
+    'calc.diameter': '直径 (mm)',
+    'calc.pressure': '压力',
+    'calc.speed': '速度 (%)',
+    'calc.waste': '废料 (%)',
+    'calc.hdPercentage': 'HD 百分比 (%)',
+    'calc.ldPercentage': 'LD 百分比 (%)',
+    'calc.piecesCount': '件数',
+    'calc.weightPerPiece': '单件重量 (kg)',
+    'calc.totalLength': '总长度 (m)',
+    'calc.productionTime': '生产时间',
+    'calc.calculate': '计算',
+    'calc.results': '结果',
+    'calc.diameter25': 'Ø25',
+    'calc.diameter32': 'Ø32',
+    'calc.diameter40': 'Ø40',
+    'calc.diameter50': 'Ø50',
+    'calc.diameter63': 'Ø63',
+    'calc.diameter75': 'Ø75',
+    'calc.diameter90': 'Ø90',
+    'calc.hdQuantity': 'HD 数量',
+    'calc.ldQuantity': 'LD 数量',
+    'calc.usefulQuantity': '可用数量',
+    'calc.totalQuantity': '总数量',
+    'calc.dryerQuantity': '干燥机数量',
+    'calc.blackColorQuantity': '黑色数量',
+
+    // Calibre Change
+    'calibre.title': '口径变化',
+    'calibre.detected': '检测到口径变化',
+    'calibre.changeSummary': '从 Ø{from}mm 变为 Ø{to}mm',
+    'calibre.timeLoss': '时间损失',
+    'calibre.timeLossMinutes': '时间损失 (分钟)',
+    'calibre.automaticallyAdded': '此时间损失已自动添加到生产时间',
+    'calibre.optional': '口径变化 (可选)',
+    'calibre.noChange': '无口径变化',
+    'calibre.selectChange': '选择先前的口径以自动计算时间损失',
+
+    // Stock & Inventory
+    'stock.name': '名称',
+    'stock.quantity': '数量',
+    'stock.minLevel': '最低水平',
+    'stock.maxLevel': '最高水平',
+    'stock.lastUpdated': '最后更新',
+    'stock.addProduct': '添加产品',
+    'stock.updateStock': '更新库存',
+    'stock.lowStock': '库存不足',
+    'stock.outOfStock': '缺货',
+
+    // Forms & Validation
+    'form.required': '必填项',
+    'form.invalid': '无效',
+    'form.saved': '保存成功',
+    'form.error': '保存时出错',
+    'form.confirmDelete': '确定要删除吗?',
+    'form.deleteConfirmed': '删除成功',
+
+    // Messages & Alerts
+    'message.success': '成功',
+    'message.error': '错误',
+    'message.warning': '警告',
+    'message.info': '信息',
+    'message.loading': '加载中...',
+    'message.noData': '无数据',
+    'message.empty': '空',
+
+    // Time & Date
+    'time.today': '今天',
+    'time.yesterday': '昨天',
+    'time.thisWeek': '本周',
+    'time.thisMonth': '本月',
+    'time.january': '一月',
+    'time.february': '二月',
+    'time.march': '三月',
+    'time.april': '四月',
+    'time.may': '五月',
+    'time.june': '六月',
+    'time.july': '七月',
+    'time.august': '八月',
+    'time.september': '九月',
+    'time.october': '十月',
+    'time.november': '十一月',
+    'time.december': '十二月',
+    'time.monday': '星期一',
+    'time.tuesday': '星期二',
+    'time.wednesday': '星期三',
+    'time.thursday': '星期四',
+    'time.friday': '星期五',
+    'time.saturday': '星期六',
+    'time.sunday': '星期日',
+
+    // PDF & Reports
+    'pdf.productionSheet': '生产单',
+    'pdf.generateReport': '生成报告',
+    'pdf.exportPDF': '导出为 PDF',
+    'pdf.printReport': '打印报告',
+
+    // User Roles
+    'role.admin': '管理员',
+    'role.conductor': '导管员',
+    'role.magasinier': '库管员',
+    'role.manager': '经理',
+
+    // Settings
+    'settings.title': '设置',
+    'settings.language': '语言',
+    'settings.theme': '主题',
+    'settings.notifications': '通知',
+    'settings.security': '安全',
+    'settings.account': '账户',
+    'settings.changePassword': '更改密码',
+    'settings.currentPassword': '当前密码',
+    'settings.newPassword': '新密码',
+    'settings.confirmPassword': '确认密码',
+  },
+} as const;
+
+export function t(key: keyof typeof translations.fr, language: Language = 'fr', variables?: Record<string, string>): string {
+  let text = translations[language][key as keyof typeof translations.fr] || translations.fr[key as keyof typeof translations.fr] || key;
+  
+  if (variables) {
+    Object.entries(variables).forEach(([varName, value]) => {
+      text = text.replace(`{${varName}}`, value);
+    });
+  }
+  
+  return text;
+}
