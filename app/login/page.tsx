@@ -81,7 +81,7 @@ export default function LoginPage() {
               SYSTÈME SÉCURISÉ
             </div>
             <h2 className="text-3xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">{t('login.title')}</h2>
-            <p className="text-gray-500 text-sm font-medium">Accédez à votre espace de production</p>
+            <p className="text-gray-500 text-sm font-medium">{t('login.subtitle')}</p>
           </div>
 
           {error && (
