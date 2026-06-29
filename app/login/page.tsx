@@ -12,10 +12,13 @@ import { Alert } from '@/components/ui/alert'
 import { AlertCircle, Lock, Mail } from 'lucide-react'
 import { loginUser } from '@/lib/auth'
 import { useAuth } from '@/context/auth-context'
+import { useLanguage } from '@/context/language-context'
+import { LanguageSwitcher } from '@/components/language-switcher'
 
 export default function LoginPage() {
   const router = useRouter()
   const { refreshSession } = useAuth()
+  const { t } = useLanguage()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -51,6 +54,11 @@ export default function LoginPage() {
       <div className="absolute top-1/2 left-1/3 w-72 h-72 bg-blue-400/5 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
 
       <div className="relative z-10 w-full max-w-md">
+        {/* Language Switcher - Top right on login */}
+        <div className="absolute -top-16 right-0">
+          <LanguageSwitcher />
+        </div>
+
         {/* Logo section */}
         <div className="text-center mb-8 transform transition duration-500 hover:scale-105">
           <div className="flex justify-center mb-6">
@@ -72,8 +80,8 @@ export default function LoginPage() {
             <div className="inline-block bg-linear-to-r from-blue-600 to-purple-600 text-white px-3 py-1 rounded-full text-xs font-semibold mb-3 tracking-wider">
               SYSTÈME SÉCURISÉ
             </div>
-            <h2 className="text-3xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">Connexion</h2>
-            <p className="text-gray-500 text-sm font-medium">Accédez à votre espace de production</p>
+            <h2 className="text-3xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">{t('login.title')}</h2>
+            <p className="text-gray-500 text-sm font-medium">{t('login.subtitle')}</p>
           </div>
 
           {error && (
@@ -91,13 +99,13 @@ export default function LoginPage() {
                   <div className="p-1.5 bg-linear-to-br from-blue-600 to-purple-600 rounded-lg">
                     <Mail className="w-4 h-4 text-white" />
                   </div>
-                  Adresse Email
+                  {t('login.email')}
                 </div>
               </Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="Entrez votre adresse email"
+                placeholder={t('login.email')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={loading}
@@ -112,7 +120,7 @@ export default function LoginPage() {
                   <div className="p-1.5 bg-linear-to-br from-blue-600 to-purple-600 rounded-lg">
                     <Lock className="w-4 h-4 text-white" />
                   </div>
-                  Mot de passe
+                  {t('login.password')}
                 </div>
               </Label>
               <Input
@@ -135,10 +143,10 @@ export default function LoginPage() {
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  Connexion en cours...
+                  {t('message.loading')}
                 </span>
               ) : (
-                'Se connecter'
+                t('login.signin')
               )}
             </Button>
           </form>
@@ -152,9 +160,9 @@ export default function LoginPage() {
 
           {/* Register link */}
           <p className="text-center text-sm text-gray-600 font-medium">
-            Pas encore de compte?{' '}
+            {t('login.noAccount')}{' '}
             <Link href="/register" className="text-blue-600 hover:text-blue-700 font-bold transition-colors duration-300 hover:underline">
-              S'inscrire
+              {t('login.signup')}
             </Link>
           </p>
         </Card>

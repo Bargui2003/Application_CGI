@@ -1,6 +1,10 @@
 'use client'
 
+import { useLanguage } from '@/context/language-context'
+
 export function Footer() {
+  const { t } = useLanguage()
+  
   return (
     <footer className="bg-linear-to-r from-slate-900 via-slate-800 to-slate-900 text-slate-50 mt-16 border-t-4 border-primary">
       <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
@@ -32,7 +36,7 @@ export function Footer() {
         </div>
         <div className="border-t border-slate-700 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-slate-400">
-            © 2026 Comptoir Guetat Industrie. Tous droits réservés.
+            © {t('footer.year')} {t('footer.copyright')}. {t('footer.allRights')}.
           </p>
           <p className="text-sm text-slate-400">
             Excellence industrielle • Technologie • Innovation

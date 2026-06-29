@@ -12,10 +12,13 @@ import { Alert } from '@/components/ui/alert'
 import { AlertCircle, Lock, User, Mail } from 'lucide-react'
 import { registerUser } from '@/lib/auth'
 import { useAuth } from '@/context/auth-context'
+import { useLanguage } from '@/context/language-context'
+import { LanguageSwitcher } from '@/components/language-switcher'
 
 export default function RegisterPage() {
   const router = useRouter()
   const { refreshSession } = useAuth()
+  const { t } = useLanguage()
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -81,6 +84,10 @@ export default function RegisterPage() {
       <div className="absolute top-1/2 left-1/3 w-72 h-72 bg-blue-400/5 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
 
       <div className="relative z-10 w-full max-w-md">
+        {/* Language Switcher - Top right on register */}
+        <div className="absolute -top-16 right-0">
+          <LanguageSwitcher />
+        </div>
         {/* Logo section */}
         <div className="text-center mb-8 transform transition duration-500 hover:scale-105">
           <div className="flex justify-center mb-6">
@@ -102,8 +109,8 @@ export default function RegisterPage() {
             <div className="inline-block bg-linear-to-r from-blue-600 to-purple-600 text-white px-3 py-1 rounded-full text-xs font-semibold mb-3 tracking-wider">
               CRÉER UN COMPTE
             </div>
-            <h2 className="text-3xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">Inscription</h2>
-            <p className="text-gray-500 text-sm font-medium">Rejoignez notre système de production avancée</p>
+            <h2 className="text-3xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">{t('register.pageTitle')}</h2>
+            <p className="text-gray-500 text-sm font-medium">{t('register.pageSubtitle')}</p>
           </div>
 
           {error && (

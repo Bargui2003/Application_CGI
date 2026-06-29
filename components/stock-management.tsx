@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useProduction } from '@/context/production-context-supabase'
+import { useLanguage } from '@/context/language-context'
 import { Plus, Minus, TrendingUp, TrendingDown, AlertTriangle, Lock } from 'lucide-react'
 
 interface StockManagementProps {
@@ -15,6 +16,7 @@ interface StockManagementProps {
 
 export function StockManagement({ isReadOnly = false }: StockManagementProps) {
   const { stockLevels, addToStock, removeFromStock, stockMovements } = useProduction()
+  const { t } = useLanguage()
   const [selectedMaterial, setSelectedMaterial] = useState<'hd' | 'ld' | 'blackColor' | 'dryer'>('hd')
   const [quantity, setQuantity] = useState('')
   const [notes, setNotes] = useState('')
@@ -22,15 +24,15 @@ export function StockManagement({ isReadOnly = false }: StockManagementProps) {
   const [success, setSuccess] = useState('')
 
   const materials = [
-    { key: 'hd', label: 'HD (Haute Densité)', value: stockLevels.hd },
-    { key: 'ld', label: 'LD (Basse Densité)', value: stockLevels.ld },
-    { key: 'blackColor', label: 'Couleur Noire', value: stockLevels.blackColor },
-    { key: 'dryer', label: 'Sécheur', value: stockLevels.dryer },
+    { key: 'hd', label: t('stock.hdDensity'), value: stockLevels.hd },
+    { key: 'ld', label: t('stock.ldDensity'), value: stockLevels.ld },
+    { key: 'blackColor', label: t('stock.blackColor'), value: stockLevels.blackColor },
+    { key: 'dryer', label: t('stock.dryer'), value: stockLevels.dryer },
   ] as const
 
   const handleAddStock = async () => {
     if (isReadOnly) {
-      setError('Vous n\'avez pas la permission de modifier le stock')
+      setError(t('stock.noPermission'))
       return
     }
 
@@ -39,19 +41,19 @@ export function StockManagement({ isReadOnly = false }: StockManagementProps) {
 
     const qty = parseFloat(quantity)
     if (!quantity || qty <= 0) {
-      setError('Veuillez entrer une quantité valide')
+      setError(t('stock.validQuantity'))
       return
     }
 
     try {
       await addToStock(selectedMaterial, qty, notes || undefined)
-      setSuccess(`${qty} kg ajoutés à ${materials.find(m => m.key === selectedMaterial)?.label}`)
+      setSuccess(`${qty} ${t('stock.added')} ${materials.find(m => m.key === selectedMaterial)?.label}`)
       setQuantity('')
       setNotes('')
 
       setTimeout(() => setSuccess(''), 3000)
     } catch (err) {
-      setError('Erreur lors de l\'ajout au stock')
+      setError(t('stock.error'))
       if (err instanceof Error) console.error(err.message)
     }
   }

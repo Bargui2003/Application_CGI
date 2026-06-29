@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { useLanguage } from '@/context/language-context'
 
 const PRODUCT_SPECS = [
   {
@@ -62,29 +63,31 @@ const PRODUCT_SPECS = [
 ]
 
 export function ProductSpecifications() {
+  const { t } = useLanguage()
+
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Spécifications des Produits</CardTitle>
-          <CardDescription>Exigences de poids pour différentes tailles de tuyaux et classes de pression</CardDescription>
+          <CardTitle>{t('specs.title')}</CardTitle>
+          <CardDescription>{t('specs.description')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
             {PRODUCT_SPECS.map((product) => (
               <div key={product.diameter} className="border-l-4 border-primary pl-4">
-                <h3 className="text-lg font-semibold mb-3">Tuyaux {product.diameter}mm</h3>
+                <h3 className="text-lg font-semibold mb-3">{t('specs.pipes')} {product.diameter}{t('specs.mm')}</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {product.specs.map((spec) => (
                     <div key={`${product.diameter}-${spec.pressure}`} className="bg-card rounded-lg p-3 border border-border">
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-medium text-sm">{spec.pressure}</span>
-                        <Badge variant="outline">{product.diameter}mm</Badge>
+                        <Badge variant="outline">{product.diameter}{t('specs.mm')}</Badge>
                       </div>
                       <div className="space-y-1">
-                        <p className="text-xs text-muted-foreground">Plage de Poids</p>
+                        <p className="text-xs text-muted-foreground">{t('specs.weightRange')}</p>
                         <p className="text-lg font-bold text-primary">
-                          {spec.minWeight} - {spec.maxWeight} kg
+                          {spec.minWeight} - {spec.maxWeight} {t('specs.kg')}
                         </p>
                       </div>
                     </div>

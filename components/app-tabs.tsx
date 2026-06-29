@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useAuth } from '@/context/auth-context'
+import { useLanguage } from '@/context/language-context'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ProductionCalculator } from '@/components/production-calculator'
 import { ProductionHistory } from '@/components/production-history'
@@ -18,6 +19,7 @@ export function AppTabs() {
   const [activeTab, setActiveTab] = useState('calculator')
   const { isAdmin, isConducteur, role } = useAuth()
   const isMagasinierRole = isMagasinier()
+  const { t } = useLanguage()
 
   // Déterminer le nombre de tabs à afficher
   const tabCount = [
@@ -62,7 +64,7 @@ export function AppTabs() {
                 className="w-full justify-start gap-3 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400 data-[state=active]:shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-transparent data-[state=active]:border-slate-200 dark:data-[state=active]:border-slate-700"
               >
                 <BarChart3 className="h-5 w-5 shrink-0" />
-                <span>Calculatrice</span>
+                <span>{t('app.calculatrice')}</span>
               </TabsTrigger>
             )}
 
@@ -73,7 +75,7 @@ export function AppTabs() {
                 className="w-full justify-start gap-3 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-green-600 dark:data-[state=active]:text-green-400 data-[state=active]:shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-transparent data-[state=active]:border-slate-200 dark:data-[state=active]:border-slate-700"
               >
                 <Package className="h-5 w-5 shrink-0" />
-                <span>Stocks</span>
+                <span>{t('app.stocks')}</span>
               </TabsTrigger>
             )}
 
@@ -84,7 +86,7 @@ export function AppTabs() {
                 className="w-full justify-start gap-3 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-orange-600 dark:data-[state=active]:text-orange-400 data-[state=active]:shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-transparent data-[state=active]:border-slate-200 dark:data-[state=active]:border-slate-700"
               >
                 <AlertCircle className="h-5 w-5 shrink-0" />
-                <span>Alertes</span>
+                <span>{t('app.alertes')}</span>
               </TabsTrigger>
             )}
 
@@ -95,7 +97,7 @@ export function AppTabs() {
                 className="w-full justify-start gap-3 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-purple-600 dark:data-[state=active]:text-purple-400 data-[state=active]:shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-transparent data-[state=active]:border-slate-200 dark:data-[state=active]:border-slate-700"
               >
                 <History className="h-5 w-5 shrink-0" />
-                <span>Statistiques</span>
+                <span>{t('app.statistiques')}</span>
               </TabsTrigger>
             )}
 
@@ -106,7 +108,7 @@ export function AppTabs() {
                 className="w-full justify-start gap-3 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-blue-500 dark:data-[state=active]:text-blue-400 data-[state=active]:shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-transparent data-[state=active]:border-slate-200 dark:data-[state=active]:border-slate-700"
               >
                 <Wrench className="h-5 w-5 shrink-0" />
-                <span>Spécifications</span>
+                <span>{t('app.specifications')}</span>
               </TabsTrigger>
             )}
 
@@ -117,7 +119,7 @@ export function AppTabs() {
                 className="w-full justify-start gap-3 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-green-600 dark:data-[state=active]:text-green-400 data-[state=active]:shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-transparent data-[state=active]:border-slate-200 dark:data-[state=active]:border-slate-700"
               >
                 <Store className="h-5 w-5 shrink-0" />
-                <span>Magasinier</span>
+                <span>{t('app.magasinier')}</span>
               </TabsTrigger>
             )}
 
@@ -128,7 +130,7 @@ export function AppTabs() {
                 className="w-full justify-start gap-3 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-green-600 dark:data-[state=active]:text-green-400 data-[state=active]:shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-transparent data-[state=active]:border-slate-200 dark:data-[state=active]:border-slate-700"
               >
                 <FileText className="h-5 w-5 shrink-0" />
-                <span>Fiches</span>
+                <span>{t('app.fiches')}</span>
               </TabsTrigger>
             )}
           </TabsList>
@@ -161,7 +163,7 @@ export function AppTabs() {
                   className="gap-2 px-4 py-3 rounded-lg font-medium text-sm whitespace-nowrap transition-all duration-200 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400 data-[state=active]:shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-transparent data-[state=active]:border-slate-200 dark:data-[state=active]:border-slate-700"
                 >
                   <BarChart3 className="h-4 w-4 shrink-0" />
-                  <span>Calculatrice</span>
+                  <span>{t('app.calculatrice')}</span>
                 </TabsTrigger>
               )}
 
@@ -172,7 +174,7 @@ export function AppTabs() {
                   className="gap-2 px-4 py-3 rounded-lg font-medium text-sm whitespace-nowrap transition-all duration-200 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-green-600 dark:data-[state=active]:text-green-400 data-[state=active]:shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-transparent data-[state=active]:border-slate-200 dark:data-[state=active]:border-slate-700"
                 >
                   <Package className="h-4 w-4 shrink-0" />
-                  <span>Stocks</span>
+                  <span>{t('app.stocks')}</span>
                 </TabsTrigger>
               )}
 
@@ -183,7 +185,7 @@ export function AppTabs() {
                   className="gap-2 px-4 py-3 rounded-lg font-medium text-sm whitespace-nowrap transition-all duration-200 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-orange-600 dark:data-[state=active]:text-orange-400 data-[state=active]:shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-transparent data-[state=active]:border-slate-200 dark:data-[state=active]:border-slate-700"
                 >
                   <AlertCircle className="h-4 w-4 shrink-0" />
-                  <span>Alertes</span>
+                  <span>{t('app.alertes')}</span>
                 </TabsTrigger>
               )}
 
@@ -194,7 +196,7 @@ export function AppTabs() {
                   className="gap-2 px-4 py-3 rounded-lg font-medium text-sm whitespace-nowrap transition-all duration-200 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-purple-600 dark:data-[state=active]:text-purple-400 data-[state=active]:shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-transparent data-[state=active]:border-slate-200 dark:data-[state=active]:border-slate-700"
                 >
                   <History className="h-4 w-4 shrink-0" />
-                  <span>Statistiques</span>
+                  <span>{t('app.statistiques')}</span>
                 </TabsTrigger>
               )}
 
@@ -301,7 +303,7 @@ export function AppTabs() {
                     </h4>
                     <div className="text-sm text-blue-800 dark:text-blue-200 leading-relaxed space-y-2">
                       <div>
-                        ✓ Vous avez accès à : <span className="font-semibold">Stocks</span>, <span className="font-semibold">Alertes</span>, <span className="font-semibold">Spécifications</span> et <span className="font-semibold">Fiches de production</span>
+                        ✓ Vous avez accès à : <span className="font-semibold">{t('app.accessStocks')}</span>, <span className="font-semibold">{t('app.alertes')}</span>, <span className="font-semibold">{t('app.specifications')}</span> et <span className="font-semibold">{t('app.accessFiches')}</span>
                       </div>
                       <div className="text-xs text-blue-700 dark:text-blue-300 pt-1">
                         💡 Pour accéder à la calculatrice et l'historique, contactez un administrateur.
@@ -329,7 +331,7 @@ export function AppTabs() {
                     </h4>
                     <div className="text-sm text-green-800 dark:text-green-200 leading-relaxed space-y-2">
                       <div>
-                        ✓ Vous avez accès au : <span className="font-semibold">Tableau de Bord</span> pour valider les productions en attente
+                        ✓ Vous avez accès au : <span className="font-semibold">{t('app.accessTableauDeBord')}</span> {t('app.validateProductions')}
                       </div>
                       <div className="text-xs text-green-700 dark:text-green-300 pt-1">
                         💡 Vous pouvez valider les productions en statut "Brouillon" et mettre à jour les stocks.
