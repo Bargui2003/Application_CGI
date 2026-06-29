@@ -216,46 +216,46 @@ export function ProductionCalculator() {
           </div>
           <div>
             <h2 className="text-3xl font-bold bg-linear-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
-              Calculatrice de Production
+              {t('calc.title')}
             </h2>
-            <p className="text-sm text-muted-foreground mt-1">Calculez et validez vos productions facilement</p>
+            <p className="text-sm text-muted-foreground mt-1">{t('page.productionDescription')}</p>
           </div>
         </div>
       </div>
 
       <Card className="border-0 shadow-md bg-linear-to-br from-white to-slate-50 dark:from-slate-950 dark:to-slate-900">
         <CardHeader className="pb-4">
-          <CardTitle>Paramètres de Production</CardTitle>
-          <CardDescription>Entrez les paramètres et matériaux pour générer votre calcul</CardDescription>
+          <CardTitle>{t('cond.enterConductor')}</CardTitle>
+          <CardDescription>{t('page.productionDescription')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="pieces" className="text-base font-semibold">Nombre de Pièces</Label>
+              <Label htmlFor="pieces" className="text-base font-semibold">{t('calc.pieces')}</Label>
               <Input
                 id="pieces"
                 type="number"
                 value={piecesCount}
                 onChange={(e) => setPiecesCount(e.target.value)}
-                placeholder="Entrez le nombre de pièces/rouleaux"
+                placeholder={t('calc.enterPieces')}
                 className="border-2 border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
               />
-              <p className="text-xs text-muted-foreground">Rouleaux à produire</p>
+              <p className="text-xs text-muted-foreground">{t('calc.pieces')}</p>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="waste" className="text-base font-semibold">Taux de Déchet</Label>
+              <Label htmlFor="waste" className="text-base font-semibold">{t('calc.wastePercent')}</Label>
               <Input
                 id="waste"
                 type="number"
                 value={wastePercentage}
                 onChange={(e) => setWastePercentage(e.target.value)}
-                placeholder="Pourcentage de déchet"
+                placeholder={t('calc.enterWaste')}
                 className="border-2 border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
               />
-              <p className="text-xs text-muted-foreground">% de matériau perdu</p>
+              <p className="text-xs text-muted-foreground">{t('calc.wastePercent')}</p>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="diameter" className="text-base font-semibold">Diamètre & Pression</Label>
+              <Label htmlFor="diameter" className="text-base font-semibold">{t('calc.diameter')} & {t('calc.pressure')}</Label>
               <div className="space-y-3">
                 <select
                   id="diameter"
@@ -274,7 +274,7 @@ export function ProductionCalculator() {
                 </select>
                 
                 <div className="bg-linear-to-br from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
-                  <p className="text-xs font-bold text-blue-900 dark:text-blue-200 mb-3 uppercase tracking-wider">Classes de Pression Disponibles</p>
+                  <p className="text-xs font-bold text-blue-900 dark:text-blue-200 mb-3 uppercase tracking-wider">{t('calc.selectPressure')}</p>
                   <div className="grid grid-cols-3 gap-2 mb-3">
                     {Object.keys(PRODUCT_SPECS[diameter]).map((pn) => (
                       <button
@@ -298,13 +298,13 @@ export function ProductionCalculator() {
                 
                 {/* Previous Diameter Selection for Calibre Change */}
                 <div className="mt-3 p-3 bg-amber-50 dark:bg-amber-950/20 rounded-lg border border-amber-200 dark:border-amber-700">
-                  <p className="text-xs font-semibold text-amber-900 dark:text-amber-200 mb-2 uppercase">⚙️ Changement de Calibre (Optionnel)</p>
+                  <p className="text-xs font-semibold text-amber-900 dark:text-amber-200 mb-2 uppercase">⚙️ {t('calibre.optional')}</p>
                   <select
                     value={previousDiameter || ''}
                     onChange={(e) => setPreviousDiameter(e.target.value || null)}
                     className="w-full px-3 py-2 border border-amber-300 dark:border-amber-700 rounded-md bg-white dark:bg-slate-800 text-sm text-foreground focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all"
                   >
-                    <option value="">Aucun changement de calibre</option>
+                    <option value="">{t('calibre.noChange')}</option>
                     {diameters.filter(d => d !== diameter).map((d) => (
                       <option key={d} value={d}>
                         Ø {d} mm → Ø {diameter} mm
@@ -312,28 +312,28 @@ export function ProductionCalculator() {
                     ))}
                   </select>
                   <p className="text-xs text-amber-700 dark:text-amber-300 mt-1.5">
-                    Sélectionnez le calibre précédent pour calculer automatiquement la perte de temps
+                    {t('calibre.selectChange')}
                   </p>
                 </div>
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="speed" className="text-base font-semibold">Vitesse de Production</Label>
+              <Label htmlFor="speed" className="text-base font-semibold">{t('calc.speed')}</Label>
               <Input
                 id="speed"
                 type="number"
                 value={speed}
                 onChange={(e) => setSpeed(e.target.value)}
-                placeholder="Vitesse en m/min"
+                placeholder={t('calc.enterSpeed')}
                 className="border-2 border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
               />
-              <p className="text-xs text-muted-foreground">Mètres par minute</p>
+              <p className="text-xs text-muted-foreground">{t('calc.speed')}</p>
             </div>
           </div>
           <div className="border-t border-slate-200 dark:border-slate-700 pt-6">
             <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
               <div className="w-1 h-6 bg-linear-to-b from-purple-500 to-pink-500 rounded-full"></div>
-              Composition des Matériaux
+              {t('calc.materials.hd')} & {t('calc.materials.ld')}
             </h3>
             
             <div className="mb-6 p-4 bg-linear-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 rounded-lg border border-purple-200 dark:border-purple-800">
