@@ -13,21 +13,30 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>('fr')
-  const [mounted, setMounted] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
 
   // Load language from localStorage on mount
   useEffect(() => {
-    const savedLanguage = localStorage.getItem('language') as Language | null
-    if (savedLanguage && (savedLanguage === 'fr' || savedLanguage === 'zh')) {
-      setLanguageState(savedLanguage)
+    try {
+      const savedLanguage = localStorage.getItem('language') as Language | null
+      if (savedLanguage && (savedLanguage === 'fr' || savedLanguage === 'zh')) {
+        setLanguageState(savedLanguage)
+      }
+    } catch (e) {
+      // localStorage might not be available
+      console.error('[v0] localStorage error:', e)
     }
-    setMounted(true)
+    setIsMounted(true)
   }, [])
 
   // Save language to localStorage when it changes
   const setLanguage = (lang: Language) => {
     setLanguageState(lang)
-    localStorage.setItem('language', lang)
+    try {
+      localStorage.setItem('language', lang)
+    } catch (e) {
+      console.error('[v0] localStorage error:', e)
+    }
   }
 
   // Translation function
@@ -45,10 +54,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     return text
   }
 
-  if (!mounted) {
-    return <>{children}</>
-  }
-
+  // Always provide context, even before mount to prevent hydration errors
   return (
     <LanguageContext.Provider value={{ language, setLanguage, t }}>
       {children}
