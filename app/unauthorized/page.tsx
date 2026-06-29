@@ -3,8 +3,11 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { AlertCircle, ArrowLeft } from 'lucide-react'
+import { useLanguage } from '@/context/language-context'
 
 export default function UnauthorizedPage() {
+  const { t } = useLanguage()
+
   return (
     <div className="min-h-screen bg-linear-to-br from-red-500 to-orange-500 flex items-center justify-center p-4">
       {/* Background decoration */}
@@ -20,9 +23,9 @@ export default function UnauthorizedPage() {
         </div>
 
         {/* Error message */}
-        <h1 className="text-4xl font-bold text-white mb-2">Accès Refusé</h1>
+        <h1 className="text-4xl font-bold text-white mb-2">{t('unauth.title')}</h1>
         <p className="text-white/90 mb-8 text-lg">
-          Vous n'avez pas les permissions nécessaires pour accéder à cette page.
+          {t('unauth.message')}
         </p>
 
         {/* Info box */}
@@ -38,12 +41,12 @@ export default function UnauthorizedPage() {
           <Link href="/">
             <Button className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/30 rounded-lg flex items-center justify-center gap-2">
               <ArrowLeft className="w-4 h-4" />
-              Retour au dashboard
+              {t('unauth.goHome')}
             </Button>
           </Link>
           <Link href="/login">
             <Button className="w-full bg-white text-red-600 hover:bg-white/90 rounded-lg">
-              Se reconnecter
+              {t('login.signin')}
             </Button>
           </Link>
         </div>
